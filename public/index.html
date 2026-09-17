@@ -189,6 +189,9 @@
   .tex{border-top:1px dashed var(--line);padding:10px 12px 12px;background:#fbfcfe}
   .tex-es{font-weight:800;font-size:14px;line-height:1.35}
   .tex-fr{color:var(--muted);font-size:12px;font-style:italic;margin-top:3px;line-height:1.35}
+  .exnum{display:inline-flex;align-items:center;gap:6px}
+  .backex{width:30px;height:30px;border-radius:9px;border:1px solid var(--line);background:#fff;color:var(--ink);
+    font-size:22px;line-height:1;font-weight:700;display:inline-grid;place-items:center;padding-bottom:2px;margin:-4px 2px -4px 0}
   .th.t-brand{background:var(--brand-soft);color:var(--brand)}
   .th.t-blue{background:var(--blue-soft);color:var(--blue)}
   .th.t-green{background:var(--green-soft);color:var(--green)}
@@ -316,9 +319,9 @@
 
 <div class="toast" id="toast"></div>
 
-<script src="verbs.js?v=14"></script>
-<script src="curriculum.js?v=14"></script>
-<script src="cours.js?v=14"></script>
+<script src="verbs.js?v=15"></script>
+<script src="curriculum.js?v=15"></script>
+<script src="cours.js?v=15"></script>
 <script>
 /* ============================================================
    ÉTAT & PROFILS
@@ -624,6 +627,9 @@ function wordStatus(rec){ return rec.ok>=ACQUIRE_AT && rec.ok>rec.ko ? "acquis" 
    ============================================================ */
 let exIndex = 0;
 let attempt = 0;   // nb d'essais sur la phrase affichée (seul le 1er compte)
+let exHistory = []; // phrases déjà affichées dans ce jour (flèche ‹ pour revenir)
+let forceShow = false; // on revient sur une phrase déjà validée : l'afficher quand même
+function resetExHistory(){ exHistory = []; forceShow = false; }
 
 /* Progression d'un jour :
    cleared[i] = phrase validée (juste du premier coup, sur un passage)
@@ -676,14 +682,14 @@ function renderToday(){
   const toRedo = day.sentences.filter((_,i)=>rec.answered[i] && !rec.cleared[i]).length;
   const el = document.getElementById("view-today");
 
-  if(clearedCount>=total){
+  if(clearedCount>=total && !forceShow){
     exitTyping();
     el.innerHTML = reviewBannerHTML() + celebrateHTML(day, rec);
     bindReviewBanner();
     bindCelebrate();
     return;
   }
-  if(exIndex<0 || exIndex>=total || rec.cleared[exIndex]) exIndex = nextPending(day, exIndex<0?-1:exIndex-1);
+  if(exIndex<0 || exIndex>=total || (rec.cleared[exIndex] && !forceShow)) exIndex = nextPending(day, exIndex<0?-1:exIndex-1);
   attempt = 0;
   const s = day.sentences[exIndex];
   const redo = rec.answered[exIndex] && !rec.cleared[exIndex];
@@ -712,7 +718,7 @@ function renderToday(){
 
     <div class="card">
       <div class="ex-count">
-        <span>Phrase ${exIndex+1} / ${total}${redo?` · <span style="color:#a37b00">🔁 à refaire</span>`:""}</span>
+        <span class="exnum">${exHistory.length?`<button class="backex" id="prevEx" aria-label="Phrase précédente">‹</button>`:""}Phrase ${exIndex+1} / ${total}${redo?` · <span style="color:#a37b00">🔁 à refaire</span>`:""}${forceShow&&rec.cleared[exIndex]?` · <span style="color:var(--green)">✓ déjà validée</span>`:""}</span>
         <span class="chip ${tenseChip(s.tense)}">${s.tense}</span>
       </div>
       <div class="prompt-label">Traduis en espagnol</div>
@@ -735,6 +741,7 @@ function renderToday(){
   document.getElementById("nextDay").onclick = ()=>changeDay(1);
   document.getElementById("checkBtn").onclick = doCheck;
   document.getElementById("skipBtn").onclick = ()=>{ nextEx(); };
+  const pb = document.getElementById("prevEx"); if(pb) pb.onclick = prevEx;
   const ta = document.getElementById("answer");
   keepFocus(ta);
   ta.addEventListener("keydown", enterMain);
@@ -761,6 +768,7 @@ function doCheck(){
       if(firstAppearance) rec.first[exIndex] = true;
       resolveMistake(mk);
     } else {
+      delete rec.cleared[exIndex];   // phrase revue et ratée : elle revient
       logMistake({ type:"t", k:mk, fr:s.fr, es:s.es, tip:s.tip, tense:s.tense, last:val });
     }
   }
@@ -839,6 +847,12 @@ function renderResult(res, s){
   if(res.perfect && first) toast("¡Muy bien! 🎉");
 }
 
+function prevEx(){
+  if(!exHistory.length) return;
+  exIndex = exHistory.pop();
+  forceShow = true;
+  renderToday();
+}
 function dayLabel(day){ return "Jour "+day.day; }
 function notesHTML(day){
   if(!day.notes) return "";
@@ -847,6 +861,8 @@ function notesHTML(day){
   </details>`;
 }
 function nextEx(){
+  if(exIndex>=0) exHistory.push(exIndex);
+  forceShow = false;
   exIndex = nextPending(currentDayData(), exIndex);
   renderToday();
   if(!document.body.classList.contains("typing")) window.scrollTo({top:0,behavior:"smooth"});
@@ -860,7 +876,7 @@ function changeDay(dir){
   if(target>maxDay) target=maxDay;
   if(target===day.day) return;
   profile().day = target; save();
-  exIndex = 0;
+  exIndex = 0; resetExHistory();
   renderToday();
 }
 function highestUnlockedDay(){
@@ -897,10 +913,10 @@ function bindCelebrate(){
   const rb=document.getElementById("reviewBtn");
   if(rb) rb.onclick=()=>{
     const rec=dayRec(day.day); if(rec){ rec.cleared={}; rec.answered={}; } save();
-    exIndex=0; renderToday(); window.scrollTo({top:0,behavior:"smooth"});
+    exIndex=0; resetExHistory(); renderToday(); window.scrollTo({top:0,behavior:"smooth"});
   };
   const cb=document.getElementById("continueBtn");
-  if(cb) cb.onclick=()=>{ profile().day=day.day+1; save(); exIndex=0; renderToday(); window.scrollTo({top:0,behavior:"smooth"}); };
+  if(cb) cb.onclick=()=>{ profile().day=day.day+1; save(); exIndex=0; resetExHistory(); renderToday(); window.scrollTo({top:0,behavior:"smooth"}); };
 }
 
 /* ============================================================
@@ -1485,7 +1501,7 @@ function switchTab(tab){
   document.getElementById("view-days").classList.toggle("hidden",tab!=="days");
   document.getElementById("view-verbs").classList.toggle("hidden",tab!=="verbs");
   document.getElementById("view-vocab").classList.toggle("hidden",tab!=="vocab");
-  if(tab==="today"){ reviewActive=false; exIndex=0; renderToday(); }
+  if(tab==="today"){ reviewActive=false; exIndex=0; resetExHistory(); renderToday(); }
   if(tab==="days") renderDays();
   if(tab==="verbs") renderVerbs(false);
   if(tab==="vocab") renderVocab();

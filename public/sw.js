@@ -1,9 +1,9 @@
 /* Aprende Español — service worker (mode avion)
    Toute l'app est mise en cache : elle marche sans réseau.
    /api/* n'est jamais mis en cache (la progression est gérée par l'app). */
-const CACHE = "aprende-v14";
+const CACHE = "aprende-v15";
 const ASSETS = [
-  "./", "index.html", "verbs.js?v=14", "curriculum.js?v=14", "cours.js?v=14",
+  "./", "index.html", "verbs.js?v=15", "curriculum.js?v=15", "cours.js?v=15",
   "manifest.webmanifest", "icon.svg", "icon-192.png", "icon-512.png",
 ];
 
