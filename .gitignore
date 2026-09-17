@@ -1,0 +1,10 @@
+node_modules/
+data/
+# bases SQLite (données perso : progression des profils)
+*.db
+*.db-*
+_archive-server/data-local/
+# copies locales
+_backup-*/
+.herenow/
+.DS_Store

@@ -1,0 +1,1786 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content, maximum-scale=1, user-scalable=no">
+<title>Aprende Español · Traduis, corrige, progresse</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="theme-color" content="#e8542f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Aprende">
+<style>
+  :root{
+    --bg:#f6f7fb; --card:#ffffff; --ink:#1d2433; --muted:#7b8496;
+    --line:#e8ebf2; --brand:#e8542f; --brand-soft:#fdece7;
+    --green:#12a150; --green-soft:#e6f6ec;
+    --amber:#e0a800; --amber-soft:#fcf3d9;
+    --blue:#2f6fe8; --blue-soft:#e9f0ff;
+    --radius:18px; --shadow:0 6px 22px rgba(29,36,51,.06);
+    --font:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:var(--font);background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.5}
+  button{font-family:inherit;cursor:pointer;border:none;background:none}
+  input,textarea,select{font-family:inherit}
+
+  /* ---------- LAYOUT ---------- */
+  .app{max-width:720px;margin:0 auto;padding:0 16px 120px;min-height:100%}
+  .topbar{position:sticky;top:0;z-index:20;background:rgba(246,247,251,.85);backdrop-filter:blur(10px);
+    display:flex;align-items:center;justify-content:space-between;padding:14px 2px;margin-bottom:6px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px;letter-spacing:-.3px}
+  .brand .dot{width:26px;height:26px;border-radius:9px;background:var(--brand);display:grid;place-items:center;color:#fff;font-size:15px}
+  .who{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);
+    padding:5px 6px 5px 10px;border-radius:999px;box-shadow:var(--shadow)}
+  .who .av{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:800;font-size:12px}
+  .who small{font-weight:700;font-size:13px}
+  .who svg{opacity:.5}
+
+  /* ---------- PROFILE PICKER ---------- */
+  .overlay{position:fixed;inset:0;background:linear-gradient(160deg,#fff,#f0f2f9);z-index:50;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;
+    overflow-y:auto;-webkit-overflow-scrolling:touch}
+  .overlay.form-open{justify-content:flex-start;padding-top:max(28px, env(safe-area-inset-top))}
+  .overlay.form-open h1{font-size:24px}
+  .overlay.form-open p{margin-bottom:18px}
+  .overlay.form-open #guestBtn,.overlay.form-open #guestBtn + div,.overlay.form-open a{display:none}
+  .overlay h1{font-size:30px;letter-spacing:-1px;margin-bottom:6px}
+  .overlay p{color:var(--muted);margin-bottom:28px;max-width:340px}
+  .profiles{display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
+  .pcard{width:150px;background:var(--card);border:1px solid var(--line);border-radius:22px;padding:22px 16px;
+    box-shadow:var(--shadow);transition:transform .15s,box-shadow .15s}
+  .pcard:hover{transform:translateY(-4px);box-shadow:0 14px 30px rgba(29,36,51,.12)}
+  .pcard .big{width:66px;height:66px;border-radius:50%;margin:0 auto 12px;display:grid;place-items:center;
+    color:#fff;font-weight:800;font-size:26px}
+  .pcard b{font-size:17px}
+  .pcard span{display:block;color:var(--muted);font-size:12.5px;margin-top:3px}
+  .pcard.new{border-style:dashed;background:transparent;box-shadow:none}
+  .pcard.new .big{background:#fff;color:var(--muted);border:2px dashed var(--line);font-size:30px;font-weight:600}
+  .pcard.new:hover{box-shadow:none;background:var(--card)}
+  .newform{width:min(100%,340px);background:var(--card);border:1px solid var(--line);border-radius:22px;padding:22px 20px;box-shadow:var(--shadow);text-align:left}
+  .newform h2{font-size:18px;letter-spacing:-.3px;margin-bottom:14px;text-align:center}
+  .newform label{display:block;font-size:12px;font-weight:700;color:var(--muted);margin:10px 0 5px}
+  .newform input{width:100%;font-family:inherit;font-size:16px;font-weight:600;color:#1d2433;background:#f6f7fb;border:1px solid var(--line);border-radius:12px;padding:12px 14px;outline:none}
+  .newform input:focus{border-color:var(--brand);background:#fff}
+  .newform .row{display:flex;gap:10px;margin-top:18px}
+  .newform button{flex:1;font-family:inherit;font-weight:800;font-size:14px;padding:12px;border-radius:999px;cursor:pointer;border:1px solid var(--line);background:#fff;color:#1d2433}
+  .newform button.primary{background:var(--brand);color:#fff;border-color:var(--brand)}
+  .newform button:disabled{opacity:.55;cursor:default}
+  .newform .err{color:#d63384;font-size:12.5px;font-weight:700;margin-top:10px;min-height:16px}
+
+  /* ---------- TABS ---------- */
+  .tabs{position:fixed;left:0;right:0;bottom:0;z-index:30;background:rgba(255,255,255,.92);
+    backdrop-filter:blur(12px);border-top:1px solid var(--line);display:flex;justify-content:center;gap:4px;padding:8px 8px calc(8px + env(safe-area-inset-bottom))}
+  .tab{flex:1;max-width:150px;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--muted);
+    font-weight:700;font-size:10.5px;padding:6px 2px;border-radius:12px;text-align:center}
+  .tab svg{width:21px;height:21px}
+  .tab.active{color:var(--brand)}
+  .tab.active svg{stroke:var(--brand)}
+
+  /* ---------- CARDS ---------- */
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px}
+  .card + .card{margin-top:14px}
+  .chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px}
+  .chip.brand{background:var(--brand-soft);color:var(--brand)}
+  .chip.blue{background:var(--blue-soft);color:var(--blue)}
+  .chip.green{background:var(--green-soft);color:var(--green)}
+  .chip.amber{background:var(--amber-soft);color:#a37b00}
+  .chip.gray{background:#eef0f5;color:var(--muted)}
+
+  /* ---------- DAY HEADER ---------- */
+  .dayhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+  .dayhead .nav{display:flex;align-items:center;gap:8px}
+  .iconbtn{width:38px;height:38px;border-radius:12px;background:var(--card);border:1px solid var(--line);
+    display:grid;place-items:center;box-shadow:var(--shadow);color:var(--ink)}
+  .iconbtn:disabled{opacity:.35;cursor:not-allowed}
+  .daytitle{text-align:center}
+  .daytitle b{font-size:15px}
+  .daytitle small{display:block;color:var(--muted);font-size:12px}
+
+  .progresswrap{margin:2px 0 16px}
+  .bar{height:9px;border-radius:999px;background:#eef0f5;overflow:hidden}
+  .bar > i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--brand),#f5854f);transition:width .4s}
+  .progresswrap small{display:block;text-align:right;color:var(--muted);font-size:12px;margin-top:5px;font-weight:600}
+
+  /* ---------- EXERCISE ---------- */
+  .ex-count{font-size:12.5px;color:var(--muted);font-weight:700;margin-bottom:12px;display:flex;justify-content:space-between}
+  .prompt-label{font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px}
+  .prompt{font-size:23px;font-weight:800;letter-spacing:-.4px;margin-bottom:18px}
+  .answer{width:100%;border:2px solid var(--line);border-radius:14px;padding:14px 15px;font-size:17px;
+    background:#fbfcfe;transition:border-color .15s;resize:none}
+  .answer:focus{outline:none;border-color:var(--brand);background:#fff}
+  .accents{display:flex;gap:5px;margin-top:10px}
+  .accents button{flex:1;min-width:0;max-width:44px;height:36px;border-radius:10px;border:1px solid var(--line);background:#fff;font-size:16px;color:var(--ink)}
+  .accents button:active{background:var(--brand-soft)}
+
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:15px;border-radius:14px;
+    font-weight:800;font-size:16px;transition:transform .1s,filter .1s}
+  .btn:active{transform:scale(.98)}
+  .btn.primary{background:var(--brand);color:#fff}
+  .btn.primary:hover{filter:brightness(1.05)}
+  .btn.ghost{background:#fff;border:1px solid var(--line);color:var(--ink)}
+  .btn.soft{background:#eef0f5;color:var(--ink)}
+  .btnrow{display:flex;gap:10px;margin-top:14px}
+  .btnrow .btn{flex:1}
+  .result .btnrow{display:none}   /* les actions du résultat passent dans la rangée principale (qui ne bouge pas) */
+
+  /* ---------- RESULT ---------- */
+  .result{margin-top:16px;padding-top:16px;border-top:1px dashed var(--line)}
+  .verdict{display:flex;align-items:center;gap:10px;font-weight:800;font-size:16px;margin-bottom:12px}
+  .verdict .badge{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;color:#fff;flex:none}
+  .yourline{font-size:19px;font-weight:700;margin-bottom:6px;word-spacing:1px}
+  .w{border-radius:6px;padding:1px 4px;margin:0 1px;display:inline-block}
+  .w.ok{background:var(--green-soft);color:var(--green)}
+  .w.typo{background:#fff1e0;color:#d9730d;text-decoration:underline solid #f08c2e;text-underline-offset:3px;text-decoration-thickness:2px}
+  .w.bad{background:var(--amber-soft);color:#a37b00;text-decoration:underline wavy #e0a800}
+  .hint-msg{font-size:14px;color:var(--muted);margin-top:4px}
+  .reveal{margin-top:14px;padding:14px;border-radius:12px;background:var(--green-soft);border:1px solid #cde ;display:none}
+  .reveal.show{display:block}
+  .reveal .lbl{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--green);margin-bottom:4px}
+  .reveal .es{font-size:20px;font-weight:800;color:#0d7a3d}
+  .reveal .tip{font-size:13.5px;color:#3a6b4e;margin-top:8px;line-height:1.45}
+  .miss{margin-top:10px;font-size:13.5px;color:#a37b00}
+  .miss b{background:var(--amber-soft);padding:1px 6px;border-radius:6px;margin:0 2px;display:inline-block}
+
+  /* ---------- DAYS LIST ---------- */
+  .daylist{display:flex;flex-direction:column;gap:10px}
+  .dayrow{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--line);
+    border-radius:14px;padding:14px 16px;box-shadow:var(--shadow);text-align:left;width:100%}
+  .dayrow .num{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-weight:800;flex:none;font-size:15px}
+  .dayrow.locked{opacity:.55}
+  .dayrow .meta{flex:1;min-width:0}
+  .dayrow .meta b{font-size:15px;display:block}
+  .dayrow .meta small{color:var(--muted);font-size:12.5px}
+  .dayrow .stat{flex:none;font-size:12px;font-weight:800}
+
+  /* ---------- VOCAB ---------- */
+  .vhead{display:flex;gap:10px;margin-bottom:16px}
+  .vstat{flex:1;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;text-align:center;box-shadow:var(--shadow)}
+  .vstat .n{font-size:28px;font-weight:800;letter-spacing:-1px}
+  .vstat small{color:var(--muted);font-size:12px;font-weight:700}
+  .vstat.g .n{color:var(--green)} .vstat.a .n{color:var(--amber)}
+  .seg{display:flex;background:#eef0f5;border-radius:12px;padding:4px;margin-bottom:14px}
+  .seg button{flex:1;padding:9px;border-radius:9px;font-weight:800;font-size:13.5px;color:var(--muted)}
+  .seg button.on{background:#fff;color:var(--ink);box-shadow:0 2px 6px rgba(0,0,0,.06)}
+  .words{display:flex;flex-wrap:wrap;gap:8px}
+  .word{display:inline-flex;flex-direction:column;background:var(--card);border:1px solid var(--line);
+    border-radius:12px;padding:9px 13px;box-shadow:var(--shadow)}
+  .word b{font-size:15px}
+  .word small{font-size:11px;color:var(--muted)}
+  .empty{text-align:center;color:var(--muted);padding:40px 20px;font-size:14px}
+  .empty .big{font-size:40px;margin-bottom:10px}
+
+  /* ---------- TABLEAUX DE CONJUGAISON ---------- */
+  .thint{font-size:12px;color:var(--muted);margin:0 2px 9px;font-weight:600;display:flex;align-items:center;gap:6px}
+  .tscroll{display:flex;align-items:flex-start;gap:12px;overflow-x:auto;padding:2px 2px 12px;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity}
+  .tscroll::-webkit-scrollbar{height:7px}
+  .tscroll::-webkit-scrollbar-thumb{background:#d7dbe6;border-radius:99px}
+  .tcol{flex:0 0 auto;min-width:248px;max-width:300px;background:var(--card);border:1px solid var(--line);border-radius:14px;
+    box-shadow:var(--shadow);overflow:hidden;scroll-snap-align:start}
+  .tcol .th{display:block;text-align:center;padding:11px 10px;font-size:13px;font-weight:800}
+  .tcol table{width:100%;border-collapse:collapse}
+  .tcol td{padding:8px 12px;font-size:14px;border-top:1px solid var(--line);vertical-align:top}
+  .tcol td.pr{color:var(--muted);font-weight:600;white-space:nowrap;font-size:12.5px}
+  .tcol td.fm{font-weight:800}
+  .tcol .frr{display:block;color:var(--muted);font-size:11.5px;font-weight:500;font-style:italic;line-height:1.3;margin-top:1px}
+  .tex{border-top:1px dashed var(--line);padding:10px 12px 12px;background:#fbfcfe}
+  .tex-es{font-weight:800;font-size:14px;line-height:1.35}
+  .tex-fr{color:var(--muted);font-size:12px;font-style:italic;margin-top:3px;line-height:1.35}
+  .th.t-brand{background:var(--brand-soft);color:var(--brand)}
+  .th.t-blue{background:var(--blue-soft);color:var(--blue)}
+  .th.t-green{background:var(--green-soft);color:var(--green)}
+  .th.t-amber{background:var(--amber-soft);color:#a37b00}
+  .toast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%) translateY(20px);opacity:0;
+    background:var(--ink);color:#fff;padding:11px 18px;border-radius:999px;font-weight:700;font-size:14px;
+    box-shadow:0 8px 24px rgba(0,0,0,.25);transition:.25s;z-index:40;pointer-events:none}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  .celebrate{text-align:center;padding:30px 10px}
+  .celebrate .big{font-size:52px;margin-bottom:10px}
+  .celebrate h3{font-size:22px;letter-spacing:-.5px;margin-bottom:6px}
+  .celebrate p{color:var(--muted);margin-bottom:20px}
+
+  .notes{margin:0 0 14px}
+  .notes summary{cursor:pointer;font-weight:800;font-size:14px;list-style:none;display:flex;align-items:center;gap:8px}
+  .notes summary::-webkit-details-marker{display:none}
+  .notes summary .chip{margin-left:auto}
+  .notes ul{margin:12px 0 0 18px;font-size:13.5px;color:#3d4556;display:flex;flex-direction:column;gap:6px}
+  .offline{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+  .offline .ic{font-size:30px}
+  .offline small{display:block;color:var(--muted);font-size:12.5px}
+  .offline .btn{width:auto;padding:10px 14px;font-size:13px;flex:none}
+  /* Mode saisie (mobile) : clavier ouvert = seule la carte en cours reste, collée en haut */
+  body.typing .tabs, body.typing .topbar, body.typing .toast{display:none!important}
+  body.typing .app{padding-bottom:0}
+  body.typing .app > section > :not(.active-card){display:none!important}
+  body.typing{overflow:hidden}
+  /* carte accrochée à la zone visible (visualViewport) : l'iPhone ne peut plus la décaler */
+  body.typing .active-card{position:fixed;left:12px;right:12px;z-index:25;margin:0;
+    top:calc(var(--vvtop, 0px) + 8px);height:calc(var(--vvh, 100dvh) - 16px);
+    padding:12px 14px;display:flex;flex-direction:column;overflow:hidden}
+  body.typing .active-card > *{flex:none}
+  body.typing .active-card .ex-count{margin-bottom:6px}
+  body.typing .active-card .prompt{font-size:19px;margin-bottom:8px}
+  /* ordre : phrase (haut) · réponse · accents · … · vérification + boutons (bas, au-dessus du clavier) */
+  body.typing .active-card .answer{order:1}
+  body.typing .active-card .answer{flex:1 1 auto;min-height:52px;height:auto}
+  body.typing .active-card .prompt-label{display:none}
+  body.typing .active-card .accents{order:2;padding-top:8px;margin-top:0}
+  body.typing .active-card .result{order:3;margin-top:8px;padding-top:8px;overflow-y:auto;flex:0 1 auto;min-height:0;max-height:62%}
+  /* clavier fermé : même mise en page, le menu du bas revient */
+  body.typing.kbclosed .tabs{display:flex!important}
+  body.typing .active-card .result .verdict{font-size:14px;margin-bottom:6px}
+  body.typing .active-card .result .yourline{font-size:16px;margin-bottom:2px}
+  body.typing .active-card .result .reveal{margin-top:8px;padding:10px}
+  body.typing .active-card .result .reveal .es{font-size:17px}
+  body.typing .active-card .result:has(.reveal.show) .miss-msg{display:none}
+  body.typing .active-card .mainrow{order:4;margin-top:8px}
+  body.typing .active-card .btn{padding:12px}
+  .hidden{display:none!important}
+  @media(max-width:400px){ .prompt{font-size:20px} .overlay h1{font-size:25px} }
+</style>
+</head>
+<body>
+
+<!-- PROFILE PICKER -->
+<div class="overlay" id="picker">
+  <h1>¡Hola! 👋</h1>
+  <p>Qui apprend l'espagnol aujourd'hui ? Chaque profil garde sa propre progression.</p>
+  <div class="card hidden" id="moveCard" style="max-width:360px;margin:0 auto 22px;text-align:left">
+    <b style="font-size:16px">🚚 L'app a déménagé</b>
+    <div style="color:var(--muted);font-size:13px;margin:4px 0 12px">Nouvelle version avec plus d'exercices, un lexique et le mode avion, et ta progression sauvegardée sur un serveur. Transfère ta progression de cet appareil en un clic.</div>
+    <button class="btn primary" id="moveBtn">Transférer ma progression →</button>
+    <div class="hint-msg" id="moveMsg"></div>
+  </div>
+  <div class="profiles" id="profileCards"></div>
+  <form class="newform hidden" id="newForm" autocomplete="off">
+    <h2>✨ Nouveau profil</h2>
+    <label for="nfFirst">Prénom</label>
+    <input id="nfFirst" name="firstName" maxlength="40" placeholder="Cyril" required>
+    <label for="nfLast">Nom</label>
+    <input id="nfLast" name="lastName" maxlength="40" placeholder="Dupont">
+    <div class="err" id="nfErr"></div>
+    <div class="row">
+      <button type="button" id="nfCancel">Annuler</button>
+      <button type="submit" class="primary" id="nfSubmit">Créer mon profil</button>
+    </div>
+  </form>
+  <button id="guestBtn" style="margin-top:26px;font-family:inherit;font-weight:800;font-size:14px;color:#1d2433;background:#fff;border:1px solid #e8ebf2;padding:12px 22px;border-radius:999px;cursor:pointer;box-shadow:0 6px 22px rgba(29,36,51,.06)">👤 Continuer en invité</button>
+  <div style="margin-top:8px;color:#7b8496;font-size:12px">Progression locale, non synchronisée</div>
+</div>
+
+<div class="app hidden" id="app">
+  <div class="topbar">
+    <div class="brand"><span class="dot">e</span> Aprende<span style="color:var(--brand)">Español</span></div>
+    <button class="who" id="whoBtn">
+      <span class="av" id="whoAv">D</span>
+      <small id="whoName">Dylan</small>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+  </div>
+
+  <!-- ===== TAB: TODAY ===== -->
+  <section id="view-today"></section>
+
+  <!-- ===== TAB: DAYS ===== -->
+  <section id="view-days" class="hidden"></section>
+
+  <!-- ===== TAB: VERBS ===== -->
+  <section id="view-verbs" class="hidden"></section>
+
+  <!-- ===== TAB: VOCAB ===== -->
+  <section id="view-vocab" class="hidden"></section>
+</div>
+
+<div class="tabs hidden" id="tabs">
+  <button class="tab active" data-tab="today">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#7b8496" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4z"/></svg>
+    Aujourd'hui
+  </button>
+  <button class="tab" data-tab="days">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#7b8496" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+    Parcours
+  </button>
+  <button class="tab" data-tab="verbs">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#7b8496" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg>
+    Verbes
+  </button>
+  <button class="tab" data-tab="vocab">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#7b8496" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+    Vocabulaire
+  </button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="verbs.js?v=14"></script>
+<script src="curriculum.js?v=14"></script>
+<script src="cours.js?v=14"></script>
+<script>
+/* ============================================================
+   ÉTAT & PROFILS
+   ============================================================ */
+// Liste des profils : servie par l'API (/api/profiles), miroir local pour le hors-ligne.
+const isTouch = window.matchMedia("(pointer:coarse)").matches;
+const GUEST = { name:"Invité", color:"#7b8496", initial:"?", sub:"local, non synchronisé" };
+const TAGLINES = { dylan:"¡Vamos!", rebecca:"¡A por ello!" };
+const LIST_KEY = "aprende_profiles_v1";
+const OLD_KEY  = "aprende_es_v1";      // ancien format statique : {profiles:{dylan,rebecca}, current}
+const DEFAULT_LIST = [
+  { id:"dylan",   firstName:"Dylan",   lastName:"", color:"#2f6fe8" },
+  { id:"rebecca", firstName:"Rebecca", lastName:"", color:"#e8542f" },
+];
+const PALETTE = ["#2f6fe8","#e8542f","#1fa66b","#8b5cf6","#e0a100","#0ea5b7","#d63384","#f97316"];
+// API : true = serveur dispo, false = hébergement statique (pas d'API), null = hors-ligne
+let API = null;
+let PROFILES = { guest: GUEST };
+function readList(){ try{ return JSON.parse(localStorage.getItem(LIST_KEY)) || []; }catch(e){ return []; } }
+function metaToCard(m){
+  const name = m.firstName;
+  return {
+    name,
+    fullName: m.lastName ? m.firstName+" "+m.lastName : m.firstName,
+    color: m.color,
+    initial: (m.firstName[0]||"?").toUpperCase(),
+    sub: m.lastName || TAGLINES[m.id] || "¡Hola!",
+  };
+}
+function setProfileList(list){
+  PROFILES = { guest: GUEST };
+  list.forEach(m => { PROFILES[m.id] = metaToCard(m); });
+  try{ localStorage.setItem(LIST_KEY, JSON.stringify(list)); }catch(e){}
+}
+async function loadProfileList(){
+  try{
+    const r = await fetch("/api/profiles", { cache:"no-store" });
+    const j = r.ok ? await r.json() : null;
+    if(!j || !Array.isArray(j.profiles)) throw { staticHost:true };
+    API = true;
+    setProfileList(j.profiles);
+  }catch(e){
+    // hébergement statique (here.now) ou hors-ligne : liste locale, profils par défaut au premier lancement
+    API = (e && e.staticHost) ? false : null;
+    const cached = readList();
+    setProfileList(cached.length ? cached : DEFAULT_LIST);
+  }
+}
+function isGuest(){ return current === "guest"; }
+const ACQUIRE_AT = 2;              // nb de bonnes réponses pour "acquis"
+// Données côté serveur (base SQLite) + miroir local pour le hors-ligne.
+const CACHE_KEY = "aprende_cache_v1";   // miroir local des profils
+const CUR_KEY   = "aprende_current";    // profil actif sur CET appareil
+// Reprise de l'ancienne progression statique (clé aprende_es_v1) dans le miroir local, une seule fois
+(function importOldStore(){
+  try{
+    if(localStorage.getItem(CACHE_KEY)) return;
+    const old = JSON.parse(localStorage.getItem(OLD_KEY));
+    if(old && old.profiles) localStorage.setItem(CACHE_KEY, JSON.stringify(old.profiles));
+  }catch(e){}
+})();
+let state = { profiles:{}, current:null };
+let current = null;
+let activeTab = "today";
+
+function readCache(){ try{ return JSON.parse(localStorage.getItem(CACHE_KEY)) || {} }catch(e){ return {} } }
+function writeCache(){ try{ localStorage.setItem(CACHE_KEY, JSON.stringify(state.profiles||{})); }catch(e){} }
+function profile(){ return state.profiles[current]; }
+function blankProfile(){ return { day:1, done:{}, vocab:{}, streak:0 }; }
+
+// Sauvegarde : miroir local immédiat + envoi serveur débounce.
+// Hors-ligne (avion) : les profils modifiés sont marqués « à synchroniser »
+// et envoyés dès que le réseau revient.
+const DIRTY_KEY = "aprende_dirty_v1";
+function readDirty(){ try{ return JSON.parse(localStorage.getItem(DIRTY_KEY)) || {}; }catch(e){ return {}; } }
+function setDirty(id, on){
+  const d = readDirty();
+  if(on) d[id] = true; else delete d[id];
+  try{ localStorage.setItem(DIRTY_KEY, JSON.stringify(d)); }catch(e){}
+}
+let saveTimer=null;
+function save(){
+  if(current && state.profiles[current]) state.profiles[current]._ts = Date.now();
+  writeCache();
+  if(!current || isGuest() || API===false) return;   // invité / statique = local seulement
+  setDirty(current, true);
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(pushState, 600);
+}
+async function pushProfile(id, data){
+  const r = await fetch("/api/state/"+id, {
+    method:"PUT",
+    headers:{ "Content-Type":"application/json" },
+    body: JSON.stringify({ state: data }),
+  });
+  if(!r.ok) throw new Error("http "+r.status);
+  setDirty(id, false);
+}
+async function pushState(){
+  if(!current || isGuest() || API===false) return;
+  try{ await pushProfile(current, state.profiles[current]); }
+  catch(e){ /* reste marqué à synchroniser, renvoyé au retour du réseau */ }
+  refreshSyncBadge();
+}
+// Envoie tous les profils modifiés hors-ligne
+async function flushDirty(){
+  if(API!==true) return;
+  const d = readDirty(), c = readCache();
+  for(const id of Object.keys(d)){
+    if(!c[id]){ setDirty(id, false); continue; }
+    try{ await pushProfile(id, c[id]); }catch(e){ break; }
+  }
+  refreshSyncBadge();
+}
+window.addEventListener("online", async ()=>{
+  if(API!==false){ await loadProfileList(); await flushDirty(); }
+});
+// Flush au moment où l'on quitte/masque la page (fiabilise la synchro)
+function flushNow(){
+  if(!current || isGuest() || API===false || !state.profiles[current]) return;
+  try{
+    const body = JSON.stringify({ state: state.profiles[current] });
+    if(navigator.onLine && navigator.sendBeacon){
+      navigator.sendBeacon("/api/state/"+current, new Blob([body], {type:"application/json"}));
+    }
+  }catch(e){}
+}
+window.addEventListener("visibilitychange", ()=>{ if(document.visibilityState==="hidden") flushNow(); });
+window.addEventListener("pagehide", flushNow);
+
+async function fetchProfileState(id){
+  if(id==="guest" || API===false){ const c=readCache(); return c[id] || null; }   // invité / statique = local
+  try{
+    const r = await fetch("/api/state/"+id, { cache:"no-store" });
+    if(!r.ok) throw new Error("http "+r.status);
+    const j = await r.json();
+    // Progression faite hors-ligne et pas encore envoyée : la version locale gagne
+    const local = readCache()[id];
+    if(local && readDirty()[id] && (!j.state || (local._ts||0) >= (j.state._ts||0))){
+      pushProfile(id, local).catch(()=>{});
+      return local;
+    }
+    return j.state; // peut être null (profil jamais joué)
+  }catch(e){
+    const c = readCache(); return c[id] || null; // repli hors-ligne
+  }
+}
+
+/* ============================================================
+   NORMALISATION & COMPARAISON MOT À MOT
+   ============================================================ */
+function stripAccents(s){ return s.normalize("NFD").replace(/[̀-ͯ]/g,""); }
+/* distance d'édition (Levenshtein) pour détecter les fautes d'orthographe */
+function lev(a,b){
+  const m=a.length,n=b.length;
+  if(!m) return n; if(!n) return m;
+  let prev=Array.from({length:n+1},(_,j)=>j), cur=new Array(n+1);
+  for(let i=1;i<=m;i++){
+    cur[0]=i;
+    for(let j=1;j<=n;j++){
+      const cost=a[i-1]===b[j-1]?0:1;
+      cur[j]=Math.min(prev[j]+1, cur[j-1]+1, prev[j-1]+cost);
+    }
+    [prev,cur]=[cur,prev];
+  }
+  return prev[n];
+}
+function tokenize(s){
+  return s.toLowerCase()
+    .replace(/[¿?¡!.,;:"«»]/g," ")
+    .replace(/\s+/g," ").trim()
+    .split(" ").filter(Boolean);
+}
+function norm(w){ return stripAccents(w.toLowerCase()); }
+
+/* Faute de frappe = pas une erreur : lettre doublée ou oubliée (neccesito / necesito),
+   confusion d'orthographe qui se prononce pareil (b/v, ll/y, z/s, h muette, g/j),
+   ou 2 lettres inversées. Une vraie faute de grammaire (vivimos / vivíamos) reste fausse. */
+function osa(a,b){
+  const m=a.length,n=b.length, d=[];
+  for(let i=0;i<=m;i++){ d[i]=[i]; }
+  for(let j=0;j<=n;j++) d[0][j]=j;
+  for(let i=1;i<=m;i++) for(let j=1;j<=n;j++){
+    const c=a[i-1]===b[j-1]?0:1;
+    d[i][j]=Math.min(d[i-1][j]+1, d[i][j-1]+1, d[i-1][j-1]+c);
+    if(i>1&&j>1&&a[i-1]===b[j-2]&&a[i-2]===b[j-1]) d[i][j]=Math.min(d[i][j], d[i-2][j-2]+1);
+  }
+  return d[m][n];
+}
+const collapse = w => w.replace(/(.)\1+/g,"$1");
+const sound = w => collapse(w.replace(/ll/g,"y").replace(/v/g,"b").replace(/z/g,"s")
+  .replace(/c([ei])/g,"s$1").replace(/g([ei])/g,"j$1").replace(/h/g,""));
+const sortedLetters = w => w.split("").sort().join("");
+function sameWord(u, r){   // u, r normalisés (minuscules, sans accents)
+  if(u===r) return "exact";
+  if(collapse(u)===collapse(r) || sound(u)===sound(r)) return "typo";
+  if(r.length>=5 && sortedLetters(u)===sortedLetters(r) && osa(u,r)===1) return "typo";
+  return "";
+}
+// Pronoms sujets ajoutés par l'utilisateur : corrects en espagnol, jamais comptés faux
+const OPT_PRON = new Set(["yo","tú","él","ella","nosotros","nosotras","vosotros","vosotras","ellos","ellas","usted","ustedes"]);
+
+/* LCS entre 2 listes de tokens normalisés -> alignement (fautes de frappe tolérées) */
+function align(userTok, refTok){
+  const a = userTok.map(norm), b = refTok.map(norm);
+  const n=a.length, m=b.length;
+  const eq = Array.from({length:n},(_,i)=>b.map(bj=>sameWord(a[i],bj)));
+  const dp = Array.from({length:n+1},()=>new Array(m+1).fill(0));
+  for(let i=n-1;i>=0;i--) for(let j=m-1;j>=0;j--)
+    dp[i][j] = eq[i][j] ? dp[i+1][j+1]+1 : Math.max(dp[i+1][j],dp[i][j+1]);
+  const userMark = new Array(n).fill(false);   // true = mot juste
+  const userTypo = new Array(n).fill(-1);      // index du mot attendu si faute de frappe
+  const refMatched = new Array(m).fill(false);
+  let i=0,j=0;
+  while(i<n && j<m){
+    if(eq[i][j] && dp[i][j]===dp[i+1][j+1]+1){
+      userMark[i]=true; refMatched[j]=true;
+      if(eq[i][j]==="typo") userTypo[i]=j;
+      i++; j++;
+    }
+    else if(dp[i+1][j] >= dp[i][j+1]) i++;
+    else j++;
+  }
+  return { userMark, userTypo, refMatched };
+}
+
+/* Compare la réponse à toutes les variantes acceptées, garde la meilleure */
+// « Ayer comí… » = « Comí… ayer » : un adverbe de temps en tête ou en fin est accepté aux deux places
+const MOVABLE = new Set(["ayer","hoy","mañana","ahora","siempre","también","todavía","luego","después","antes","normalmente"]);
+function withMovedAdverbs(accepted){
+  const out = accepted.slice();
+  accepted.forEach(ref=>{
+    const t = tokenize(ref);
+    if(t.length<3) return;
+    if(MOVABLE.has(t[0])) out.push(t.slice(1).concat(t[0]).join(" "));
+    if(MOVABLE.has(t[t.length-1])) out.push([t[t.length-1]].concat(t.slice(0,-1)).join(" "));
+  });
+  return out;
+}
+function evaluate(userText, accepted0){
+  const userTok = tokenize(userText);
+  const accepted = withMovedAdverbs(accepted0);
+  let best=null;
+  accepted.forEach((ref, idx)=>{
+    const refTok = tokenize(ref);
+    const {userMark, userTypo, refMatched} = align(userTok, refTok);
+    // pronom sujet en plus (yo, ella…) = accepté
+    userMark.forEach((ok,i)=>{ if(!ok && OPT_PRON.has(userTok[i]) && !refTok.includes(userTok[i])) userMark[i]="pron"; });
+    const good = refMatched.filter(Boolean).length;
+    const total = refTok.length;
+    const extra = userMark.filter(x=>!x).length;
+    const typos = userTypo.filter(x=>x>=0).length;
+    const score = good - extra*0.5 - typos*0.1;
+    if(!best || score>best.score)
+      best = { score, userTok, userMark, userTypo, refTok, refMatched, good, total, refIndex: idx<accepted0.length ? idx : 0 };
+  });
+  best.perfect = best.refMatched.every(Boolean) && best.userMark.every(Boolean);
+  best.typos = best.userTypo.map((r,u)=> r>=0 ? {u:best.userTok[u], r:best.refTok[r]} : null).filter(Boolean);
+
+  // Appariement des "presque bons" (plus éloignés qu'une faute de frappe) : faute d'orthographe
+  best.userNear = new Array(best.userTok.length).fill(false);
+  best.nearPairs = [];
+  const usedR = new Set();
+  best.userMark.forEach((matched,ui)=>{
+    if(matched) return;
+    let bestR=-1, bestD=Infinity;
+    best.refMatched.forEach((rm,ri)=>{
+      if(rm || usedR.has(ri)) return;
+      const d = lev(norm(best.userTok[ui]), norm(best.refTok[ri]));
+      if(d<bestD){ bestD=d; bestR=ri; }
+    });
+    if(bestR>=0){
+      const maxLen = Math.max(best.refTok[bestR].length, best.userTok[ui].length);
+      if(bestD <= Math.max(2, Math.floor(maxLen*0.4))){
+        usedR.add(bestR);
+        best.userNear[ui]=true;
+        best.nearPairs.push({u:ui, r:bestR});
+      }
+    }
+  });
+  best.missing = best.refTok.filter((_,k)=>!best.refMatched[k] && !usedR.has(k));
+  return best;
+}
+
+/* ============================================================
+   VOCABULAIRE
+   ============================================================ */
+function updateVocab(res){
+  const v = profile().vocab;
+  res.refTok.forEach((w,k)=>{
+    const key = norm(w);
+    if(!v[key]) v[key] = { es:w, ok:0, ko:0 };
+    else v[key].es = w; // garde la forme accentuée de référence
+    if(res.refMatched[k]) v[key].ok++;
+    else v[key].ko++;
+  });
+  save();
+}
+function wordStatus(rec){ return rec.ok>=ACQUIRE_AT && rec.ok>rec.ko ? "acquis" : "revoir"; }
+
+/* ============================================================
+   RENDU — AUJOURD'HUI
+   ============================================================ */
+let exIndex = 0;
+let attempt = 0;   // nb d'essais sur la phrase affichée (seul le 1er compte)
+
+/* Progression d'un jour :
+   cleared[i] = phrase validée (juste du premier coup, sur un passage)
+   first[i]   = juste du premier coup dès sa toute première apparition
+   answered[i]= déjà proposée au moins une fois
+   Une phrase ratée revient (après les autres) jusqu'à être juste du premier coup. */
+function dayRec(dayNum, create){
+  const done = profile().done;
+  let rec = done[dayNum];
+  if(!rec){
+    if(!create) return null;
+    rec = done[dayNum] = { correct:0, answered:{}, correctMap:{} };
+  }
+  if(!rec.answered) rec.answered = {};
+  if(!rec.cleared){   // ancien format : seules les phrases justes sont validées, les ratées reviennent
+    rec.cleared = Object.assign({}, rec.correctMap||{});
+    rec.first = Object.assign({}, rec.correctMap||{});
+  }
+  if(!rec.first) rec.first = {};
+  return rec;
+}
+function countIn(map, total){ let n=0; for(let i=0;i<total;i++) if(map && map[i]) n++; return n; }
+function currentDayData(){
+  const d = profile().day;
+  return CURRICULUM.find(x=>x.day===d) || CURRICULUM[CURRICULUM.length-1];
+}
+function dayScore(dayNum){
+  const day = CURRICULUM.find(x=>x.day===dayNum), rec = dayRec(dayNum);
+  return rec ? countIn(rec.cleared, day.sentences.length) : 0;
+}
+function dayCompleted(dayNum){
+  const day = CURRICULUM.find(x=>x.day===dayNum);
+  return dayScore(dayNum) >= day.sentences.length;
+}
+// prochaine phrase non validée après "from" (on reboucle), -1 si tout est validé
+function nextPending(day, from){
+  const rec = dayRec(day.day) || { cleared:{} };
+  const pend = day.sentences.map((_,i)=>i).filter(i=>!rec.cleared[i]);
+  if(!pend.length) return -1;
+  return pend.find(i=>i>from) ?? pend[0];
+}
+
+function renderToday(){
+  if(reviewActive){ renderReview(); return; }
+  const day = currentDayData();
+  const dayNum = day.day;
+  const total = day.sentences.length;
+  const rec = dayRec(dayNum) || { cleared:{}, answered:{}, first:{} };
+  const clearedCount = countIn(rec.cleared, total);
+  const toRedo = day.sentences.filter((_,i)=>rec.answered[i] && !rec.cleared[i]).length;
+  const el = document.getElementById("view-today");
+
+  if(clearedCount>=total){
+    exitTyping();
+    el.innerHTML = reviewBannerHTML() + celebrateHTML(day, rec);
+    bindReviewBanner();
+    bindCelebrate();
+    return;
+  }
+  if(exIndex<0 || exIndex>=total || rec.cleared[exIndex]) exIndex = nextPending(day, exIndex<0?-1:exIndex-1);
+  attempt = 0;
+  const s = day.sentences[exIndex];
+  const redo = rec.answered[exIndex] && !rec.cleared[exIndex];
+  const isFirstDay = dayNum===1, isLastDay = dayNum===CURRICULUM[CURRICULUM.length-1].day;
+
+  el.innerHTML = `
+    ${reviewBannerHTML()}
+    <div class="dayhead">
+      <div class="nav">
+        <button class="iconbtn" id="prevDay" ${isFirstDay?"disabled":""}>${chev("left")}</button>
+      </div>
+      <div class="daytitle">
+        <b>${dayLabel(day)} · ${day.theme}</b>
+        <small>${total} phrases · ${day.tense}</small>
+      </div>
+      <div class="nav">
+        <button class="iconbtn" id="nextDay" ${isLastDay?"disabled":""}>${chev("right")}</button>
+      </div>
+    </div>
+
+    <div class="progresswrap">
+      <div class="bar"><i style="width:${Math.round(clearedCount/total*100)}%"></i></div>
+      <small>${clearedCount}/${total} validées${toRedo?` · ${toRedo} à refaire`:""}</small>
+    </div>
+    ${notesHTML(day)}
+
+    <div class="card">
+      <div class="ex-count">
+        <span>Phrase ${exIndex+1} / ${total}${redo?` · <span style="color:#a37b00">🔁 à refaire</span>`:""}</span>
+        <span class="chip ${tenseChip(s.tense)}">${s.tense}</span>
+      </div>
+      <div class="prompt-label">Traduis en espagnol</div>
+      <div class="prompt">${escapeHtml(s.fr)}</div>
+
+      <textarea class="answer" id="answer" rows="2" placeholder="Écris ta traduction…" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="send"></textarea>
+      <div class="accents" id="accents"></div>
+
+      <div class="btnrow mainrow">
+        <button class="btn soft" id="skipBtn" style="flex:.5">Passer</button>
+        <button class="btn primary" id="checkBtn">Vérifier</button>
+      </div>
+
+      <div class="result hidden" id="result"></div>
+    </div>
+  `;
+  buildAccentBar("accents","answer");
+  bindReviewBanner();
+  document.getElementById("prevDay").onclick = ()=>changeDay(-1);
+  document.getElementById("nextDay").onclick = ()=>changeDay(1);
+  document.getElementById("checkBtn").onclick = doCheck;
+  document.getElementById("skipBtn").onclick = ()=>{ nextEx(); };
+  const ta = document.getElementById("answer");
+  keepFocus(ta);
+  ta.addEventListener("keydown", enterMain);
+}
+
+function doCheck(){
+  const day = currentDayData();
+  const s = day.sentences[exIndex];
+  const ta = document.getElementById("answer");
+  const val = ta.value.trim();
+  if(!val){ toast("Écris une réponse d'abord ✍️"); return; }
+  attempt++;
+  const res = evaluate(val, s.es);
+  const dayNum = day.day;
+  const rec = dayRec(dayNum, true);
+  const firstAppearance = !rec.answered[exIndex];
+  rec.answered[exIndex] = true;
+  const mk = "t|"+dayNum+"|"+exIndex;
+  if(attempt===1){
+    updateVocab(res);
+    if(res.perfect){
+      rec.cleared[exIndex] = true;
+      rec.correctMap[exIndex] = true;
+      if(firstAppearance) rec.first[exIndex] = true;
+      resolveMistake(mk);
+    } else {
+      logMistake({ type:"t", k:mk, fr:s.fr, es:s.es, tip:s.tip, tense:s.tense, last:val });
+    }
+  }
+  rec.correct = countIn(rec.first, day.sentences.length);
+  save();
+  renderResult(res, s);
+  const box = document.getElementById("result");
+  if(!document.body.classList.contains("typing")) setTimeout(()=>box.scrollIntoView({block:"center", behavior:"smooth"}), 60);
+}
+
+function typoHTML(res){
+  if(!res.typos || !res.typos.length) return "";
+  return `<div class="hint-msg">✍️ Petite faute d'orthographe (en orange), pas à refaire : ${res.typos.map(t=>`<b style="color:#d9730d">${escapeHtml(t.u)}</b> → <b>${escapeHtml(t.r)}</b>`).join(", ")}</div>`;
+}
+function userLineHTML(res){
+  return res.userTok.map((w,i)=>
+    `<span class="w ${res.userTypo[i]>=0?"typo":res.userMark[i]?"ok":"bad"}">${escapeHtml(w)}</span>`
+  ).join(" ");
+}
+
+function renderResult(res, s){
+  const box = document.getElementById("result");
+  box.classList.remove("hidden");
+  const yourHtml = userLineHTML(res);
+  const first = attempt===1;
+
+  let verdict, msg="";
+  if(res.perfect && first){
+    verdict = `<div class="verdict"><span class="badge" style="background:var(--green)">✓</span> ¡Perfecto ! Phrase validée.</div>`;
+    msg = typoHTML(res);
+  } else if(res.perfect){
+    verdict = `<div class="verdict"><span class="badge" style="background:var(--blue)">✓</span> Juste ! Elle reviendra plus tard : à valider du premier coup.</div>`;
+    msg = typoHTML(res);
+  } else {
+    const near = res.nearPairs.length;
+    const extra = res.userMark.filter(x=>!x).length - near;
+    const miss = res.missing.length;
+    verdict = `<div class="verdict"><span class="badge" style="background:var(--amber)">!</span> ${res.good}/${res.total} mots justes · ${first?"elle reviendra plus tard":"pas encore"}</div>`;
+    let parts=[];
+    if(near)  parts.push(`${near} mot${near>1?"s":""} mal écrit${near>1?"s":""} (surligné${near>1?"s":""})`);
+    if(extra) parts.push(`${extra} mot${extra>1?"s":""} en trop`);
+    if(miss)  parts.push(`${miss} mot${miss>1?"s":""} manquant${miss>1?"s":""}`);
+    msg = `<div class="hint-msg miss-msg">${parts.join(" · ")}. Corrige ta réponse puis revérifie, ou regarde la correction.</div>` + typoHTML(res);
+  }
+  const lastOne = nextPending(currentDayData(), exIndex)===-1;
+
+  box.innerHTML = `
+    ${verdict}
+    <div class="yourline">${yourHtml || '<span class="hint-msg">(vide)</span>'}</div>
+    ${msg}
+    ${(!res.perfect) ? `
+      <div class="reveal" id="reveal">
+        <div class="lbl">Correction</div>
+        <div class="es">${escapeHtml(s.es[res.refIndex||0])}</div>
+        ${s.tip?`<div class="tip">💡 ${escapeHtml(s.tip)}</div>`:""}
+      </div>` : `
+      <div class="reveal show" style="background:var(--green-soft)">
+        ${res.typos.length?`<div class="es" style="font-size:16px">${escapeHtml(s.es[res.refIndex||0])}</div>`:""}
+        ${s.tip?`<div class="tip" style="color:#3a6b4e">💡 ${escapeHtml(s.tip)}</div>`:""}
+      </div>`}
+    <div class="btnrow">
+      ${!res.perfect?`<button class="btn ghost" id="revealBtn">Voir la correction</button>`:""}
+      ${!res.perfect?`<button class="btn soft" id="retryBtn">Réessayer</button>`:""}
+    </div>
+    <div class="btnrow">
+      <button class="btn primary" id="nextBtn">${lastOne?"Terminer le jour":"Phrase suivante"} →</button>
+    </div>
+  `;
+  const rev = document.getElementById("revealBtn");
+  if(rev) rev.onclick = ()=>{ document.getElementById("reveal").classList.add("show"); rev.remove(); };
+  const retry = document.getElementById("retryBtn");
+  if(retry) retry.onclick = ()=>{ box.classList.add("hidden"); document.getElementById("answer").focus(); };
+  document.getElementById("nextBtn").onclick = ()=>nextEx();
+  mirrorResult(box);
+
+  if(res.perfect && first) toast("¡Muy bien! 🎉");
+}
+
+function dayLabel(day){ return "Jour "+day.day; }
+function notesHTML(day){
+  if(!day.notes) return "";
+  return `<details class="card notes"><summary>📒 À retenir <span class="chip brand">${day.notes.length} point${day.notes.length>1?"s":""}</span></summary>
+    <ul>${day.notes.map(n=>`<li>${escapeHtml(n)}</li>`).join("")}</ul>
+  </details>`;
+}
+function nextEx(){
+  exIndex = nextPending(currentDayData(), exIndex);
+  renderToday();
+  if(!document.body.classList.contains("typing")) window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function changeDay(dir){
+  const day = currentDayData();
+  const maxDay = CURRICULUM[CURRICULUM.length-1].day;
+  let target = day.day + dir;
+  if(target<1) target=1;
+  if(target>maxDay) target=maxDay;
+  if(target===day.day) return;
+  profile().day = target; save();
+  exIndex = 0;
+  renderToday();
+}
+function highestUnlockedDay(){
+  let h=1;
+  CURRICULUM.forEach(d=>{ if(dayCompleted(d.day)) h=Math.max(h,d.day+1); });
+  return Math.min(h, CURRICULUM[CURRICULUM.length-1].day);
+}
+
+function celebrateHTML(day, rec){
+  const maxDay = CURRICULUM[CURRICULUM.length-1].day;
+  const hasNext = day.day<maxDay;
+  const perfectCount = countIn(rec.first, day.sentences.length);
+  return `
+    <div class="dayhead">
+      <div class="nav"><button class="iconbtn" id="prevDay">${chev("left")}</button></div>
+      <div class="daytitle"><b>${dayLabel(day)} · ${day.theme}</b><small>terminé ✓</small></div>
+      <div class="nav"><button class="iconbtn" id="nextDay" ${hasNext?"":"disabled"}>${chev("right")}</button></div>
+    </div>
+    <div class="card celebrate">
+      <div class="big">🎉</div>
+      <h3>${dayLabel(day)} terminé !</h3>
+      <p>${perfectCount}/${day.sentences.length} phrases justes dès le premier essai. ${hasNext?"Le jour suivant est débloqué.":"Tu as fini le parcours actuel. ¡Increíble!"}</p>
+      <div class="btnrow" style="max-width:340px;margin:0 auto">
+        <button class="btn ghost" id="reviewBtn">Refaire ce jour</button>
+        ${hasNext?`<button class="btn primary" id="continueBtn">Continuer →</button>`:""}
+      </div>
+    </div>
+  `;
+}
+function bindCelebrate(){
+  const day = currentDayData();
+  document.getElementById("prevDay").onclick=()=>changeDay(-1);
+  const nd=document.getElementById("nextDay"); if(nd) nd.onclick=()=>changeDay(1);
+  const rb=document.getElementById("reviewBtn");
+  if(rb) rb.onclick=()=>{
+    const rec=dayRec(day.day); if(rec){ rec.cleared={}; rec.answered={}; } save();
+    exIndex=0; renderToday(); window.scrollTo({top:0,behavior:"smooth"});
+  };
+  const cb=document.getElementById("continueBtn");
+  if(cb) cb.onclick=()=>{ profile().day=day.day+1; save(); exIndex=0; renderToday(); window.scrollTo({top:0,behavior:"smooth"}); };
+}
+
+/* ============================================================
+   JOURNAL D'ERREURS (révision persistante)
+   Chaque erreur reste jusqu'à ce qu'elle soit refaite juste.
+   ============================================================ */
+let reviewActive = false;
+let reviewCurrent = null;
+
+function mistakes(){ if(!profile().mistakes) profile().mistakes=[]; return profile().mistakes; }
+function pendingCount(){ return mistakes().length; }
+function logMistake(m){
+  const l=mistakes(); const e=l.find(x=>x.k===m.k);
+  if(e){ e.errors=(e.errors||1)+1; if(m.last) e.last=m.last; } else { m.errors=1; l.push(m); }
+  save();
+}
+function resolveMistake(k){
+  const p=k.split("|");
+  if(p[0]==="t"){ const d=CURRICULUM.find(x=>x.day===Number(p[1])); if(d){ const r=dayRec(d.day,true); r.cleared[Number(p[2])]=true; } }
+  const l=mistakes(); const i=l.findIndex(x=>x.k===k); if(i>=0){ l.splice(i,1); save(); } }
+function bumpMistake(k){ const e=mistakes().find(x=>x.k===k); if(e){ e.errors=(e.errors||1)+1; save(); } }
+function moveToEnd(k){ const l=mistakes(); const i=l.findIndex(x=>x.k===k); if(i>=0){ const [m]=l.splice(i,1); l.push(m); save(); } }
+
+function reviewBannerHTML(){
+  const p=pendingCount(); if(!p) return "";
+  return `<button class="card" id="reviewBanner" style="width:100%;text-align:left;display:flex;align-items:center;gap:12px;margin-bottom:14px;background:var(--amber-soft);border-color:#f3dfa8;box-shadow:var(--shadow)">
+    <div style="font-size:26px">🔁</div>
+    <div style="flex:1"><b>${p} erreur${p>1?"s":""} à revoir</b>
+      <div style="color:#a37b00;font-size:13px">Des jours précédents · à corriger jusqu'à ce que ce soit juste.</div></div>
+    <span class="chip amber">Réviser →</span></button>`;
+}
+function bindReviewBanner(){ const b=document.getElementById("reviewBanner"); if(b) b.onclick=startReview; }
+
+function startReview(){ reviewActive=true; reviewCurrent=null; renderReview(); window.scrollTo({top:0}); }
+function exitReview(){ reviewActive=false; renderToday(); window.scrollTo({top:0}); }
+
+function renderReview(){
+  const el=document.getElementById("view-today");
+  const list=mistakes();
+  if(!reviewCurrent || !list.find(m=>m.k===reviewCurrent.k)) reviewCurrent=list[0]||null;
+
+  if(!reviewCurrent){
+    exitTyping();
+    el.innerHTML=`<div class="card celebrate"><div class="big">🎉</div>
+      <h3>Aucune erreur à revoir !</h3>
+      <p>Tout est corrigé. Ce journal se remplira automatiquement quand tu feras de nouvelles fautes, et chaque faute reviendra ici jusqu'à ce qu'elle soit juste.</p>
+      <div class="btnrow" style="max-width:320px;margin:0 auto"><button class="btn primary" id="revExit">Revenir au jour →</button></div></div>`;
+    document.getElementById("revExit").onclick=exitReview; return;
+  }
+
+  const it=reviewCurrent, remaining=list.length;
+  let card;
+  if(it.type==="v"){
+    card=`<div class="ex-count"><span>Révision · ${remaining} en attente</span><span class="chip blue">${escapeHtml(it.tense||"lexique")}</span></div>
+      <div class="prompt-label">${it.tense==="nombre"?"Écris ce nombre en espagnol":"Comment dit-on en espagnol ?"}</div><div class="prompt">${escapeHtml(it.fr)}</div>
+      <textarea class="answer" id="revAnswer" placeholder="Ta réponse…" autocomplete="off" autocapitalize="off" spellcheck="false" rows="1" autocorrect="off" enterkeyhint="send"></textarea>`;
+  } else if(it.type==="t"){
+    card=`<div class="ex-count"><span>Révision · ${remaining} en attente</span><span class="chip ${tenseChip(it.tense||"")}">${it.tense||"phrase"}</span></div>
+      <div class="prompt-label">Traduis en espagnol</div><div class="prompt">${escapeHtml(it.fr)}</div>
+      <textarea class="answer" id="revAnswer" rows="2" placeholder="Ta traduction…" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="send"></textarea>`;
+  } else {
+    card=`<div class="ex-count"><span>Révision · ${remaining} en attente</span><span class="chip ${tenseChip(it.tenseLabel)}">${it.tenseLabel}</span></div>
+      <div class="prompt-label">Conjugue ce verbe</div>
+      <div class="prompt" style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap"><span>${it.inf}</span><span style="font-size:14px;font-weight:600;color:var(--muted)">${it.frVerb||""}</span></div>
+      <div style="font-size:17px;margin:-6px 0 16px"><b style="color:var(--brand)">${CONJ.PRONOUNS[it.person]}</b> <span style="color:var(--muted)">· ${it.tenseLabel.toLowerCase()}</span></div>
+      <textarea class="answer" id="revAnswer" placeholder="Forme conjuguée…" autocomplete="off" autocapitalize="off" spellcheck="false" rows="1" autocorrect="off" enterkeyhint="send"></textarea>`;
+  }
+  el.innerHTML=`
+    <div class="dayhead">
+      <div class="nav"><button class="iconbtn" id="revBack">${chev("left")}</button></div>
+      <div class="daytitle"><b>🔁 Révision des erreurs</b><small>${remaining} à corriger</small></div>
+      <div class="nav" style="width:38px"></div>
+    </div>
+    <div class="card">${card}
+      <div class="accents" id="revAccents"></div>
+      <div class="btnrow mainrow"><button class="btn soft" id="revSkip" style="flex:.5">Passer</button><button class="btn primary" id="revCheck">Vérifier</button></div>
+      <div class="result hidden" id="revResult"></div>
+    </div>`;
+  buildAccentBar("revAccents","revAnswer");
+  document.getElementById("revBack").onclick=exitReview;
+  document.getElementById("revCheck").onclick=doReviewCheck;
+  document.getElementById("revSkip").onclick=()=>{ moveToEnd(it.k); reviewCurrent=null; renderReview(); window.scrollTo({top:0}); };
+  const inp=document.getElementById("revAnswer"); keepFocus(inp);
+  inp.addEventListener("keydown", enterMain);
+}
+
+function doReviewCheck(){
+  const it=reviewCurrent;
+  const val=document.getElementById("revAnswer").value.trim();
+  if(!val){ toast("Écris une réponse ✍️"); return; }
+  const box=document.getElementById("revResult"); box.classList.remove("hidden");
+
+  if(it.type==="v"){
+    const w={ es:it.es[0], alt:it.es.slice(1) };
+    const r=lexCheck(val, w);
+    if(r==="ok"){
+      resolveMistake(it.k);
+      box.innerHTML=`<div class="verdict"><span class="badge" style="background:var(--green)">✓</span> ¡Corrigé ! <span style="color:var(--green)">${escapeHtml(w.es)}</span></div>
+        <div class="btnrow"><button class="btn primary" id="revNext">Continuer →</button></div>`;
+      toast("Erreur corrigée 🎯");
+    } else {
+      bumpMistake(it.k); moveToEnd(it.k);
+      box.innerHTML=`<div class="verdict"><span class="badge" style="background:var(--amber)">${r==="accent"?"~":"!"}</span> ${r==="accent"?"Presque ! Juste un accent.":"Pas encore juste."}</div>
+        <div class="yourline"><span class="w bad">${escapeHtml(val)}</span></div>
+        <div class="reveal show" style="background:var(--amber-soft)"><div class="lbl" style="color:#a37b00">La bonne réponse</div><div class="es" style="color:#a37b00">${escapeHtml(w.es)}</div></div>
+        <div class="btnrow"><button class="btn primary" id="revNext">Suivant →</button></div>`;
+    }
+  } else if(it.type==="t"){
+    const res=evaluate(val, it.es); updateVocab(res);
+    const yourHtml=userLineHTML(res);
+    if(res.perfect){
+      resolveMistake(it.k);
+      box.innerHTML=`<div class="verdict"><span class="badge" style="background:var(--green)">✓</span> ¡Corrigé ! Erreur retirée du journal.</div>
+        <div class="yourline">${yourHtml}</div>${typoHTML(res)}
+        <div class="btnrow"><button class="btn primary" id="revNext">Continuer →</button></div>`;
+      toast("Erreur corrigée 🎯");
+    } else {
+      bumpMistake(it.k); moveToEnd(it.k); it.last=val; save();
+      const near=res.nearPairs.length, extra=res.userMark.filter(x=>!x).length-near, miss=res.missing.length;
+      let parts=[]; if(near)parts.push(`${near} faute${near>1?"s":""} d'orthographe`); if(extra)parts.push(`${extra} mot${extra>1?"s":""} en trop`); if(miss)parts.push(`${miss} mot${miss>1?"s":""} manquant${miss>1?"s":""}`);
+      box.innerHTML=`<div class="verdict"><span class="badge" style="background:var(--amber)">!</span> Pas encore · ${res.good}/${res.total}</div>
+        <div class="yourline">${yourHtml||'<span class="hint-msg">(vide)</span>'}</div>
+        <div class="hint-msg miss-msg">${parts.join(" · ")}. Elle restera dans le journal et reviendra.</div>
+        <div class="reveal" id="revReveal"><div class="lbl">Correction</div><div class="es">${escapeHtml(it.es[res.refIndex||0])}</div>${it.tip?`<div class="tip">💡 ${escapeHtml(it.tip)}</div>`:""}</div>
+        <div class="btnrow"><button class="btn ghost" id="revRevealBtn">Voir la correction</button><button class="btn primary" id="revNext">Suivant →</button></div>`;
+      const rv=document.getElementById("revRevealBtn"); if(rv) rv.onclick=()=>{ document.getElementById("revReveal").classList.add("show"); rv.remove(); };
+    }
+  } else {
+    const expected=conjExpected({inf:it.inf,tenseKey:it.tenseKey,person:it.person});
+    const exact=val.toLowerCase()===expected.toLowerCase();
+    const accentOnly=!exact && stripAccents(val.toLowerCase())===stripAccents(expected.toLowerCase());
+    if(exact){
+      resolveMistake(it.k);
+      box.innerHTML=`<div class="verdict"><span class="badge" style="background:var(--green)">✓</span> ¡Corrigé ! <span style="color:var(--green)">${escapeHtml(expected)}</span></div>
+        <div class="btnrow"><button class="btn primary" id="revNext">Continuer →</button></div>`;
+      toast("Erreur corrigée 🎯");
+    } else {
+      bumpMistake(it.k); moveToEnd(it.k);
+      const amb=accentOnly?"Presque ! Juste un accent.":"Pas encore juste.";
+      box.innerHTML=`<div class="verdict"><span class="badge" style="background:var(--amber)">${accentOnly?"~":"!"}</span> ${amb}</div>
+        <div class="yourline"><span class="w bad">${escapeHtml(val)}</span></div>
+        <div class="reveal show" style="background:var(--amber-soft)"><div class="lbl" style="color:#a37b00">La bonne forme</div><div class="es" style="color:#a37b00">${escapeHtml(expected)}</div><div class="tip" style="color:#8a6d00">${escapeHtml(it.inf)} · ${escapeHtml(CONJ.PRONOUNS[it.person])} · ${escapeHtml(it.tenseLabel.toLowerCase())}</div></div>
+        <div class="btnrow"><button class="btn primary" id="revNext">Suivant →</button></div>`;
+    }
+  }
+  document.getElementById("revNext").onclick=()=>{ reviewCurrent=null; renderReview(); if(!document.body.classList.contains("typing")) window.scrollTo({top:0,behavior:"smooth"}); };
+  mirrorResult(box);
+}
+
+/* ============================================================
+   RENDU — PARCOURS (liste des jours)
+   ============================================================ */
+function renderDays(){
+  const el = document.getElementById("view-days");
+  const cur = profile().day;
+  const doneTotal = CURRICULUM.filter(d=>dayCompleted(d.day)).length;
+  const rowHTML = d=>{
+    const done = dayCompleted(d.day);
+    const isCur = d.day===cur;
+    const rec = profile().done[d.day];
+    const correct = dayScore(d.day);
+    const started = rec && Object.keys(rec.answered||{}).length>0;
+    const numStyle = done? "background:var(--green-soft);color:var(--green)"
+                    : "background:var(--brand-soft);color:var(--brand)";
+    const stat = done? `<span class="stat" style="color:var(--green)">✓ ${correct}/${d.sentences.length}</span>`
+               : started? `<span class="stat" style="color:var(--muted)">${correct}/${d.sentences.length}</span>`
+               : `<span class="chip gray">À faire</span>`;
+    return `<button class="dayrow" data-day="${d.day}" style="${isCur?"border-color:var(--brand);box-shadow:0 0 0 2px var(--brand-soft)":""}">
+      <span class="num" style="${numStyle}">${d.day}</span>
+      <span class="meta"><b>${d.theme}${isCur?' <span class="chip brand" style="vertical-align:middle">ici</span>':""}</b><small>Niveau ${d.level} · ${d.tense}</small></span>
+      ${stat}
+    </button>`;
+  };
+  const rows = CURRICULUM.map(rowHTML).join("");
+  el.innerHTML = `
+    <div class="card" style="margin-bottom:14px;display:flex;align-items:center;gap:14px">
+      <div style="font-size:34px">🗺️</div>
+      <div><b style="font-size:16px">Ton parcours</b>
+      <div style="color:var(--muted);font-size:13px">${doneTotal}/${CURRICULUM.length} jours terminés · navigue librement, saute ou reviens quand tu veux.</div></div>
+    </div>
+    ${offlineCardHTML()}
+    <div class="daylist">${rows}</div>`;
+  bindOfflineCard();
+  el.querySelectorAll(".dayrow").forEach(b=>{
+    b.onclick=()=>{ profile().day=parseInt(b.dataset.day); save(); exIndex=0; switchTab("today"); };
+  });
+}
+
+/* ============================================================
+   RENDU — VOCABULAIRE
+   ============================================================ */
+let vocabFilter="lexique";
+function renderVocab(){
+  const el = document.getElementById("view-vocab");
+  if(vocabFilter==="lexique"){ renderLexique(); return; }
+  const v = profile().vocab;
+  const entries = Object.values(v);
+  const acquis = entries.filter(r=>wordStatus(r)==="acquis");
+  const revoir = entries.filter(r=>wordStatus(r)==="revoir");
+  const list = vocabFilter==="acquis"?acquis:revoir;
+  list.sort((a,b)=> vocabFilter==="acquis" ? b.ok-a.ok : b.ko-a.ko );
+
+  const cards = list.length? list.map(r=>`
+    <div class="word">
+      <b>${escapeHtml(r.es)}</b>
+      <small>${vocabFilter==="acquis"?`✓ ${r.ok} fois juste`:`${r.ko} erreur${r.ko>1?"s":""} · ${r.ok} juste`}</small>
+    </div>`).join("")
+    : `<div class="empty"><div class="big">${vocabFilter==="acquis"?"🌱":"✨"}</div>
+        ${vocabFilter==="acquis"?"Aucun mot acquis pour l'instant. Réponds juste 2 fois à un mot pour le valider !":"Rien à revoir. Continue comme ça !"}</div>`;
+
+  el.innerHTML = `
+    <div class="vhead">
+      <div class="vstat g"><div class="n">${acquis.length}</div><small>MOTS ACQUIS</small></div>
+      <div class="vstat a"><div class="n">${revoir.length}</div><small>À REVOIR</small></div>
+    </div>
+    ${vocabSegHTML()}
+    <div class="words">${cards}</div>
+    <div class="empty" style="padding-top:26px;font-size:12.5px">Un mot passe en « acquis » après ${ACQUIRE_AT} bonnes réponses.</div>
+  `;
+  bindVocabSeg(el);
+}
+function vocabSegHTML(){
+  return `<div class="seg">
+      <button class="${vocabFilter==="lexique"?"on":""}" data-f="lexique">📚 Lexique</button>
+      <button class="${vocabFilter==="revoir"?"on":""}" data-f="revoir">À revoir</button>
+      <button class="${vocabFilter==="acquis"?"on":""}" data-f="acquis">Acquis</button>
+    </div>`;
+}
+function bindVocabSeg(el){
+  el.querySelectorAll(".seg button").forEach(b=> b.onclick=()=>{ vocabFilter=b.dataset.f; lexCurrent=null; renderVocab(); });
+}
+
+/* ============================================================
+   LEXIQUE DES COURS (flashcards FR → ES) + NOMBRES
+   ============================================================ */
+let lexSet = "all";       // "all" | id de cours | "num"
+let lexCurrent = null;    // carte en cours
+function lexStore(){ if(!profile().lex) profile().lex={}; return profile().lex; }
+function lexWords(){
+  const sets = lexSet==="all" ? LEXIQUE : LEXIQUE.filter(l=>l.id===lexSet);
+  const out = [];
+  sets.forEach(l=> l.words.forEach(w=> out.push(Object.assign({ set:l.id }, w))));
+  return out;
+}
+function lexKey(w){ return "v|"+w.set+"|"+w.es; }
+function lexMastered(){
+  const s=lexStore(); let n=0;
+  lexWords().forEach(w=>{ const r=s[lexKey(w)]; if(r && r.ok>=ACQUIRE_AT && r.ok>r.ko) n++; });
+  return n;
+}
+const NUM_U = ["cero","uno","dos","tres","cuatro","cinco","seis","siete","ocho","nueve","diez","once","doce","trece","catorce","quince","dieciséis","diecisiete","dieciocho","diecinueve","veinte","veintiuno","veintidós","veintitrés","veinticuatro","veinticinco","veintiséis","veintisiete","veintiocho","veintinueve"];
+const NUM_T = {3:"treinta",4:"cuarenta",5:"cincuenta",6:"sesenta",7:"setenta",8:"ochenta",9:"noventa"};
+const NUM_H = ["","ciento","doscientos","trescientos","cuatrocientos","quinientos","seiscientos","setecientos","ochocientos","novecientos"];
+function numToEs(n){
+  if(n<30) return NUM_U[n];
+  if(n<100){ const u=n%10; return NUM_T[Math.floor(n/10)] + (u?" y "+NUM_U[u]:""); }
+  if(n===100) return "cien";
+  if(n<1000){ const r=n%100; return NUM_H[Math.floor(n/100)] + (r?" "+numToEs(r):""); }
+  const th=Math.floor(n/1000), r=n%1000;
+  return (th===1?"mil":numToEs(th)+" mil") + (r?" "+numToEs(r):"");
+}
+function newLexCard(){
+  if(lexSet==="num"){
+    const x=Math.random();
+    const n = x<.5 ? 1+randInt(100) : x<.8 ? 100+randInt(900) : 1000+randInt(1100);
+    lexCurrent = { set:"num", fr:String(n), es:numToEs(n), alt:[] };
+    return;
+  }
+  const words = lexWords(), s = lexStore();
+  // priorité aux mots jamais vus ou ratés
+  const score = w=>{ const r=s[lexKey(w)]; return r ? r.ok - r.ko*2 + Math.random()*1.5 : -1 + Math.random(); };
+  const sorted = words.filter(w=>!lexCurrent || lexKey(w)!==lexKey(lexCurrent)).sort((a,b)=>score(a)-score(b));
+  lexCurrent = sorted[randInt(Math.min(6, sorted.length))] || words[0];
+}
+function lexNorm(t){ return t.toLowerCase().replace(/[¿?¡!.,;:"«»]/g," ").replace(/\s+/g," ").trim(); }
+function dropArticle(t){ return t.replace(/^(el|la|los|las|un|una|unos|unas) /,""); }
+function lexCheck(val, w){
+  const cands = [w.es].concat(w.alt||[]).map(lexNorm);
+  const v = lexNorm(val);
+  const eq = (a,b)=> a===b || dropArticle(a)===dropArticle(b);
+  if(cands.some(c=>eq(v,c))) return "ok";
+  if(cands.some(c=>eq(stripAccents(v),stripAccents(c)))) return "accent";
+  return "ko";
+}
+function openLexique(setId){
+  vocabFilter="lexique"; lexSet=setId; lexCurrent=null;
+  switchTab("vocab");
+}
+function renderLexique(){
+  const el = document.getElementById("view-vocab");
+  if(!lexCurrent) newLexCard();
+  const w = lexCurrent;
+  const opts = `<option value="all" ${lexSet==="all"?"selected":""}>📚 Tous les thèmes (${LEXIQUE.reduce((n,l)=>n+l.words.length,0)} mots)</option>`
+    + LEXIQUE.map(l=>`<option value="${l.id}" ${lexSet===l.id?"selected":""}>${escapeHtml(l.label)} (${l.words.length})</option>`).join("")
+    + `<option value="num" ${lexSet==="num"?"selected":""}>🔢 Nombres (écris-les en lettres)</option>`;
+  const total = lexSet==="num" ? 0 : lexWords().length;
+  el.innerHTML = `
+    ${vocabSegHTML()}
+    <div style="margin-bottom:12px">
+      <div class="prompt-label" style="margin-bottom:6px">Lexique</div>
+      <select id="lexSel" class="answer" style="padding:12px 40px 12px 14px;font-size:15px;-webkit-appearance:none;appearance:none;background:#fbfcfe url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2214%22 height=%2214%22 fill=%22none%22 stroke=%22%237b8496%22 stroke-width=%222.5%22><path d=%22M3 5l4 4 4-4%22/></svg>') no-repeat right 14px center">${opts}</select>
+    </div>
+    <div class="card">
+      <div class="ex-count">
+        <span>${lexSet==="num" ? "Nombres aléatoires" : `${lexMastered()}/${total} mots acquis`}</span>
+        <span class="chip blue">${lexSet==="num"?"🔢 chiffres → lettres":"FR → ES"}</span>
+      </div>
+      <div class="prompt-label">${lexSet==="num"?"Écris ce nombre en espagnol":"Comment dit-on en espagnol ?"}</div>
+      <div class="prompt">${escapeHtml(w.fr)}</div>
+      <textarea class="answer" id="lexAnswer" placeholder="${lexSet==="num"?"ex : treinta y dos":"ex : la bufanda"}" autocomplete="off" autocapitalize="off" spellcheck="false" rows="1" autocorrect="off" enterkeyhint="send"></textarea>
+      <div class="accents" id="lexAccents"></div>
+      <div class="btnrow mainrow">
+        <button class="btn soft" id="lexSkip" style="flex:.5">Passer</button>
+        <button class="btn primary" id="lexCheckBtn">Vérifier</button>
+      </div>
+      <div class="result hidden" id="lexResult"></div>
+    </div>
+    <div class="empty" style="padding-top:22px;font-size:12.5px">L'article (el, la…) est facultatif. Les mots ratés reviennent plus souvent.</div>`;
+  bindVocabSeg(el);
+  buildAccentBar("lexAccents","lexAnswer");
+  document.getElementById("lexSel").onchange = e=>{ lexSet=e.target.value; lexCurrent=null; renderLexique(); };
+  document.getElementById("lexSkip").onclick = ()=>{ newLexCard(); renderLexique(); };
+  document.getElementById("lexCheckBtn").onclick = doLexCheck;
+  const inp = document.getElementById("lexAnswer");
+  keepFocus(inp);
+  inp.addEventListener("keydown", enterMain);
+}
+function doLexCheck(){
+  const w = lexCurrent;
+  const val = document.getElementById("lexAnswer").value.trim();
+  if(!val){ toast("Écris ta réponse d'abord ✍️"); return; }
+  const r = lexCheck(val, w);
+  const k = w.set==="num" ? "v|num|"+w.fr : lexKey(w);
+  if(w.set!=="num"){
+    const s = lexStore(); if(!s[k]) s[k]={ok:0,ko:0};
+    if(r==="ok") s[k].ok++; else s[k].ko++;
+  }
+  if(r==="ok") resolveMistake(k);
+  else logMistake({ type:"v", k, fr:w.fr, es:[w.es].concat(w.alt||[]), tense: w.set==="num"?"nombre":"lexique" });
+  save();
+  const box = document.getElementById("lexResult");
+  box.classList.remove("hidden");
+  const verdict = r==="ok"
+    ? `<div class="verdict"><span class="badge" style="background:var(--green)">✓</span> ¡Correcto ! <span style="color:var(--green)">${escapeHtml(w.es)}</span></div>`
+    : r==="accent"
+    ? `<div class="verdict"><span class="badge" style="background:var(--amber)">~</span> Presque ! Juste un accent.</div>`
+    : `<div class="verdict"><span class="badge" style="background:var(--amber)">!</span> Pas tout à fait.</div>`;
+  box.innerHTML = `${verdict}
+    ${r!=="ok" ? `<div class="yourline"><span class="w bad">${escapeHtml(val)}</span></div>
+      <div class="reveal show" style="background:var(--amber-soft)"><div class="lbl" style="color:#a37b00">La bonne réponse</div><div class="es" style="color:#a37b00">${escapeHtml(w.es)}</div>${(w.alt&&w.alt.length)?`<div class="tip" style="color:#8a6d00">Aussi : ${escapeHtml(w.alt.join(", "))}</div>`:""}</div>` : ""}
+    <div class="btnrow"><button class="btn primary" id="lexNext">Mot suivant →</button></div>`;
+  document.getElementById("lexNext").onclick = ()=>{ newLexCard(); renderLexique(); };
+  mirrorResult(box);
+  if(r==="ok") toast("¡Muy bien! 📚");
+}
+
+/* ============================================================
+   HORS-LIGNE (mode avion) — service worker + statut de synchro
+   ============================================================ */
+let swReady = false;
+function offlineCardHTML(){
+  const pending = Object.keys(readDirty()).length;
+  const supported = "serviceWorker" in navigator;
+  const status = !supported ? "Ce navigateur ne gère pas le hors-ligne."
+    : swReady ? "Tout est téléchargé : parcours, verbes et lexique marchent sans réseau."
+    : "Téléchargement des exercices en cours…";
+  const sync = API===false ? "Progression gardée sur cet appareil."
+    : isGuest() ? "Invité : progression locale uniquement."
+    : !navigator.onLine ? `Hors-ligne · ${pending ? pending+" profil(s) à synchroniser au retour du réseau" : "tout est à jour"}`
+    : pending ? `${pending} profil(s) en attente de synchronisation` : "Progression synchronisée avec le serveur ✓";
+  return `<div class="card offline" id="offlineCard">
+    <div class="ic">✈️</div>
+    <div style="flex:1;min-width:0"><b>Mode avion</b>
+      <small>${status}</small>
+      <small id="syncBadge">${sync}</small></div>
+    ${supported && !swReady ? `<button class="btn primary" id="dlBtn">Télécharger</button>` : ""}
+  </div>`;
+}
+function bindOfflineCard(){
+  const b = document.getElementById("dlBtn");
+  if(b) b.onclick = async ()=>{ b.disabled=true; b.textContent="…"; await registerSW(); if(activeTab==="days") renderDays(); };
+}
+function refreshSyncBadge(){
+  if(activeTab==="days" && document.getElementById("offlineCard")){
+    const card = document.getElementById("offlineCard");
+    const tmp = document.createElement("div"); tmp.innerHTML = offlineCardHTML();
+    card.replaceWith(tmp.firstElementChild); bindOfflineCard();
+  }
+}
+window.addEventListener("offline", refreshSyncBadge);
+async function registerSW(){
+  if(!("serviceWorker" in navigator)) return;
+  try{
+    await navigator.serviceWorker.register("sw.js");
+    await navigator.serviceWorker.ready;
+    swReady = true;
+  }catch(e){ console.warn("SW", e); }
+  refreshSyncBadge();
+}
+
+/* ============================================================
+   RENDU — CONJUGAISON
+   ============================================================ */
+let conjTense = "all";     // filtre de temps
+let conjVerb = "all";      // "all" = aléatoire, sinon infinitif ciblé
+let conjCurrent = null;    // défi en cours
+let conjLastSeed = 0;
+let verbMode = "train";    // "train" (entraînement) | "table" (tableaux)
+let tableVerbIdx = 0;      // verbe affiché dans les tableaux
+
+function conjKey(c){ return `${c.inf}|${c.tenseKey}|${c.person}`; }
+function conjStore(){ if(!profile().conj) profile().conj={}; return profile().conj; }
+function conjExpected(c){ return CONJ.forms(c.inf)[c.tenseKey][c.person]; }
+function conjMastered(){
+  const s=conjStore(); let n=0;
+  for(const k in s){ if(s[k].ok>=ACQUIRE_AT && s[k].ok>s[k].ko) n++; }
+  return n;
+}
+function randInt(n){ return Math.floor(Math.random()*n); }
+
+function newConjChallenge(){
+  const pool = conjVerb==="all" ? CONJ.LIST : CONJ.LIST.filter(v=>v.inf===conjVerb);
+  const verb = pool[randInt(pool.length)] || CONJ.LIST[randInt(CONJ.LIST.length)];
+  const tenses = conjTense==="all" ? CONJ.TENSES : CONJ.TENSES.filter(t=>t.key===conjTense);
+  const tense = tenses[randInt(tenses.length)];
+  const person = randInt(CONJ.PRONOUNS.length);
+  const c = { inf:verb.inf, fr:verb.fr, irr:verb.irr, tenseKey:tense.key, tenseLabel:tense.label, person };
+  // évite de retomber pile sur le même défi
+  if(conjCurrent && conjKey(conjCurrent)===conjKey(c) && (conjTense==="all"||CONJ.TENSES.length>1)){ return newConjChallenge(); }
+  conjCurrent = c;
+}
+
+function tenseThClass(label){
+  const c=tenseChip(label);
+  return c==="blue"?"t-blue":c==="green"?"t-green":c==="amber"?"t-amber":"t-brand";
+}
+function verbTableHTML(){
+  const v = CONJ.LIST[tableVerbIdx];
+  const forms = CONJ.forms(v.inf);
+  const fr = CONJ.frForms(v.inf) || {};
+  const cols = CONJ.TENSES.map(t=>{
+    const rows = CONJ.PRONOUNS.map((p,i)=>
+      `<tr><td class="pr">${escapeHtml(p)}</td><td class="fm">${escapeHtml(forms[t.key][i])}<span class="frr">${escapeHtml((fr[t.key]||[])[i]||"")}</span></td></tr>`
+    ).join("");
+    const ex = CONJ.example(v.inf, t.key);
+    const exHtml = ex ? `<div class="tex"><div class="tex-es">${escapeHtml(ex.es)}</div>${ex.fr?`<div class="tex-fr">${escapeHtml(ex.fr)}</div>`:""}</div>` : "";
+    return `<div class="tcol"><span class="th ${tenseThClass(t.label)}">${t.label}</span><table>${rows}</table>${exHtml}</div>`;
+  }).join("");
+  return `
+    <div class="dayhead">
+      <div class="nav"><button class="iconbtn" onclick="verbNav(-1)">${chev("left")}</button></div>
+      <div class="daytitle"><b>${escapeHtml(v.inf)} ${v.irr?"⚠️":""}</b><small>${escapeHtml(v.fr)} · ${tableVerbIdx+1}/${CONJ.LIST.length}</small></div>
+      <div class="nav"><button class="iconbtn" onclick="verbNav(1)">${chev("right")}</button></div>
+    </div>
+    <div class="thint">${v.irr?"⚠️ Verbe irrégulier · ":""}Fais défiler les tableaux horizontalement →</div>
+    <div class="tscroll">${cols}</div>
+    <div class="thint" style="margin-top:6px">Utilise les flèches ◀ ▶ pour changer de verbe.</div>
+  `;
+}
+// Fonctions globales appelées par onclick inline (robuste, indépendant de querySelectorAll)
+function setVerbMode(m){ verbMode=m; renderVerbs(m==="train"); window.scrollTo({top:0}); }
+function verbNav(d){ tableVerbIdx=(tableVerbIdx+d+CONJ.LIST.length)%CONJ.LIST.length; renderVerbs(false); window.scrollTo({top:0}); }
+
+function renderVerbs(reroll){
+  const el = document.getElementById("view-verbs");
+  const seg = `<div class="seg" id="verbSeg" style="margin-bottom:14px">
+    <button class="${verbMode==="train"?"on":""}" onclick="setVerbMode('train')">S'entraîner</button>
+    <button class="${verbMode==="table"?"on":""}" onclick="setVerbMode('table')">Tableaux</button></div>`;
+  if(verbMode==="table"){ el.innerHTML = seg + verbTableHTML(); return; }
+  if(reroll || !conjCurrent) newConjChallenge();
+  const c = conjCurrent;
+  const chips = [{key:"all",label:"Tous"}].concat(CONJ.TENSES).map(t=>
+    `<button class="chip ${conjTense===t.key?"brand":"gray"}" data-t="${t.key}" style="cursor:pointer;border:none">${t.label}</button>`
+  ).join(" ");
+  const verbOptions = `<option value="all">🎲 Aléatoire — tous les verbes</option>` +
+    CONJ.LIST.map(v=>`<option value="${v.inf}" ${conjVerb===v.inf?"selected":""}>${v.inf} — ${v.fr}${v.irr?" ⚠️":""}</option>`).join("");
+  const pronoun = CONJ.PRONOUNS[c.person];
+  const modeLabel = conjVerb==="all" ? "🎲 Mode aléatoire" : `🎯 ${conjVerb}`;
+
+  el.innerHTML = seg + `
+    <div class="card" style="margin-bottom:14px;display:flex;align-items:center;gap:14px">
+      <div style="font-size:32px">⚡</div>
+      <div><b style="font-size:16px">Conjugaison</b>
+      <div style="color:var(--muted);font-size:13px">${modeLabel} · ${conjMastered()} forme${conjMastered()>1?"s":""} maîtrisée${conjMastered()>1?"s":""}</div></div>
+    </div>
+
+    <div style="margin-bottom:12px">
+      <div class="prompt-label" style="margin-bottom:6px">Verbe</div>
+      <select id="conjVerbSel" class="answer" style="padding:12px 40px 12px 14px;font-size:15px;-webkit-appearance:none;appearance:none;background:#fbfcfe url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2214%22 height=%2214%22 fill=%22none%22 stroke=%22%237b8496%22 stroke-width=%222.5%22><path d=%22M3 5l4 4 4-4%22/></svg>') no-repeat right 14px center">${verbOptions}</select>
+    </div>
+
+    <div class="prompt-label" style="margin-bottom:6px">Temps</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px" id="conjFilter">${chips}</div>
+
+    <div class="card">
+      <div class="ex-count">
+        <span>${c.irr?"⚠️ Verbe irrégulier":"Verbe régulier"}</span>
+        <span class="chip ${tenseChip(c.tenseLabel)}">${c.tenseLabel}</span>
+      </div>
+      <div class="prompt-label">Conjugue ce verbe</div>
+      <div class="prompt" style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
+        <span>${c.inf}</span>
+        <span style="font-size:14px;font-weight:600;color:var(--muted)">${c.fr}</span>
+      </div>
+      <div style="font-size:17px;margin:-6px 0 16px"><b style="color:var(--brand)">${pronoun}</b> <span style="color:var(--muted)">· ${c.tenseLabel.toLowerCase()}</span></div>
+
+      <textarea class="answer" id="conjAnswer" placeholder="Écris la forme conjuguée…" autocomplete="off" autocapitalize="off" spellcheck="false" rows="1" autocorrect="off" enterkeyhint="send"></textarea>
+      <div class="accents" id="conjAccents"></div>
+
+      <div class="btnrow mainrow">
+        <button class="btn soft" id="conjSkip" style="flex:.5">Passer</button>
+        <button class="btn primary" id="conjCheck">Vérifier</button>
+      </div>
+      <div class="result hidden" id="conjResult"></div>
+    </div>
+  `;
+  buildAccentBar("conjAccents","conjAnswer");
+  document.getElementById("conjVerbSel").onchange = (e)=>{ conjVerb=e.target.value; renderVerbs(true); };
+  document.getElementById("conjFilter").querySelectorAll("button").forEach(b=>
+    b.onclick=()=>{ conjTense=b.dataset.t; renderVerbs(true); });
+  document.getElementById("conjCheck").onclick = doConjCheck;
+  document.getElementById("conjSkip").onclick = ()=>renderVerbs(true);
+  const inp=document.getElementById("conjAnswer");
+  keepFocus(inp);
+  inp.addEventListener("keydown", enterMain);
+}
+
+function doConjCheck(){
+  const c = conjCurrent;
+  const val = document.getElementById("conjAnswer").value.trim();
+  if(!val){ toast("Écris ta réponse d'abord ✍️"); return; }
+  const expected = conjExpected(c);
+  const exact = val.toLowerCase() === expected.toLowerCase();
+  const accentOnly = !exact && stripAccents(val.toLowerCase()) === stripAccents(expected.toLowerCase());
+  const ok = exact; // seul l'exact compte comme acquis
+
+  const s = conjStore(); const k = conjKey(c);
+  if(!s[k]) s[k]={ok:0,ko:0};
+  if(ok) s[k].ok++; else s[k].ko++;
+  save();
+
+  // Journal d'erreurs : logue si faux, retire si corrigé
+  const mk = "c|"+c.inf+"|"+c.tenseKey+"|"+c.person;
+  if(exact) resolveMistake(mk);
+  else logMistake({ type:"c", k:mk, inf:c.inf, frVerb:c.fr, tenseKey:c.tenseKey, tenseLabel:c.tenseLabel, person:c.person });
+
+  const box = document.getElementById("conjResult");
+  box.classList.remove("hidden");
+  let verdict, body="";
+  if(exact){
+    verdict = `<div class="verdict"><span class="badge" style="background:var(--green)">✓</span> ¡Correcto ! <span style="color:var(--green)">${escapeHtml(expected)}</span></div>`;
+  } else if(accentOnly){
+    verdict = `<div class="verdict"><span class="badge" style="background:var(--amber)">~</span> Presque ! Juste un accent.</div>`;
+    body = `<div class="reveal show" style="background:var(--amber-soft)"><div class="lbl" style="color:#a37b00">La bonne forme</div><div class="es" style="color:#a37b00">${escapeHtml(expected)}</div><div class="tip" style="color:#8a6d00">Tu as écrit « ${escapeHtml(val)} » — pense à l'accent.</div></div>`;
+  } else {
+    verdict = `<div class="verdict"><span class="badge" style="background:var(--amber)">!</span> Pas tout à fait.</div>`;
+    body = `<div class="reveal" id="conjReveal"><div class="lbl">La bonne forme</div><div class="es">${escapeHtml(expected)}</div><div class="tip">${escapeHtml(c.inf)} · ${escapeHtml(CONJ.PRONOUNS[c.person])} · ${escapeHtml(c.tenseLabel.toLowerCase())}</div></div>`;
+  }
+  box.innerHTML = `
+    ${verdict}
+    ${!exact ? `<div class="yourline"><span class="w bad">${escapeHtml(val)}</span></div>`:""}
+    ${body}
+    <div class="btnrow">
+      ${(!exact && !accentOnly)?`<button class="btn ghost" id="conjRevealBtn">Voir la réponse</button>`:""}
+      <button class="btn primary" id="conjNext">Verbe suivant →</button>
+    </div>`;
+  const rb=document.getElementById("conjRevealBtn");
+  if(rb) rb.onclick=()=>{ document.getElementById("conjReveal").classList.add("show"); rb.remove(); };
+  document.getElementById("conjNext").onclick=()=>{ renderVerbs(true); if(!document.body.classList.contains("typing")) window.scrollTo({top:0,behavior:"smooth"}); };
+  mirrorResult(box);
+  if(exact) toast("¡Genial! ⚡");
+}
+
+/* ============================================================
+   NAVIGATION / UTILITAIRES
+   ============================================================ */
+function switchTab(tab){
+  exitTyping();
+  activeTab=tab;
+  document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active",t.dataset.tab===tab));
+  document.getElementById("view-today").classList.toggle("hidden",tab!=="today");
+  document.getElementById("view-days").classList.toggle("hidden",tab!=="days");
+  document.getElementById("view-verbs").classList.toggle("hidden",tab!=="verbs");
+  document.getElementById("view-vocab").classList.toggle("hidden",tab!=="vocab");
+  if(tab==="today"){ reviewActive=false; exIndex=0; renderToday(); }
+  if(tab==="days") renderDays();
+  if(tab==="verbs") renderVerbs(false);
+  if(tab==="vocab") renderVocab();
+  window.scrollTo({top:0});
+}
+document.querySelectorAll(".tab").forEach(t=> t.onclick=()=>switchTab(t.dataset.tab));
+
+function chev(dir){
+  return dir==="left"
+   ? `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>`
+   : `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>`;
+}
+function tenseChip(t){
+  if(/passé|imparf/i.test(t)) return "blue";
+  if(/futur/i.test(t)) return "green";
+  if(/condi/i.test(t)) return "amber";
+  return "brand";
+}
+function escapeHtml(s){ return s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+let toastT;
+function toast(msg){
+  const t=document.getElementById("toast"); t.textContent=msg; t.classList.add("show");
+  clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove("show"),1800);
+}
+function buildAccentBar(barId="accents", inputId="answer"){
+  const chars=["á","é","í","ó","ú","ñ","ü","¿","¡"];
+  const bar=document.getElementById(barId);
+  bar.innerHTML=chars.map(c=>`<button type="button" data-c="${c}">${c}</button>`).join("");
+  bar.querySelectorAll("button").forEach(b=> b.onclick=()=>{
+    const ta=document.getElementById(inputId);
+    const p=ta.selectionStart||ta.value.length;
+    ta.value=ta.value.slice(0,p)+b.dataset.c+ta.value.slice(p);
+    ta.focus(); ta.selectionStart=ta.selectionEnd=p+1;
+    ta.dispatchEvent(new Event("input"));
+  });
+}
+
+/* ============================================================
+   MODE SAISIE MOBILE (clavier ouvert)
+   ============================================================ */
+let typingT=null;
+const isTyping = ()=>document.body.classList.contains("typing");
+// Nouveau contenu : garde le clavier ouvert si on était en train de taper (même geste utilisateur)
+function keepFocus(el){
+  if(isTouch && !isTyping()) return;
+  if(isTyping()){   // la carte doit être visible avant de pouvoir recevoir le focus
+    clearTimeout(typingT);
+    document.querySelectorAll(".active-card").forEach(c=>c.classList.remove("active-card"));
+    const card = el.closest(".card"); if(card) card.classList.add("active-card");
+  }
+  el.focus({ preventScroll:true });
+}
+// Entrée = bouton de droite de la rangée principale (Vérifier, puis Suivante)
+function enterMain(e){
+  if(e.key!=="Enter" || e.shiftKey) return;
+  e.preventDefault();
+  const row = e.target.closest(".card").querySelector(".mainrow");
+  if(row) row.querySelectorAll("button")[1].click();
+}
+// Après une vérification : la rangée principale reprend les actions du résultat, sans bouger
+function mirrorResult(box){
+  const card = box.closest(".card"), row = card && card.querySelector(".mainrow");
+  if(!row) return;
+  if(isTouch && !isTyping()){   // vérifié clavier fermé : même mise en page figée (phrase en haut, vérification en bas)
+    document.querySelectorAll(".active-card").forEach(c=>c.classList.remove("active-card"));
+    card.classList.add("active-card");
+    document.body.classList.add("typing","kbclosed");
+    fitTyping();
+  }
+  const [l, r] = row.querySelectorAll("button");
+  const orig = { lt:l.textContent, lf:l.onclick, rt:r.textContent, rf:r.onclick };
+  const btns = [...box.querySelectorAll(".btnrow button")];
+  const next = btns.find(b=>b.classList.contains("primary"));
+  const reveal = btns.find(b=>/correction|réponse/i.test(b.textContent));
+  const retry = btns.find(b=>/essayer/i.test(b.textContent));
+  if(next){ r.textContent = next.textContent; r.onclick = ()=>next.click(); }
+  if(reveal){
+    l.textContent = "Correction"; l.style.visibility = "";
+    l.onclick = ()=>{
+      reveal.click(); l.style.visibility = "hidden";
+      const rv = box.querySelector(".reveal.show");
+      if(rv) box.scrollTop += rv.getBoundingClientRect().top - box.getBoundingClientRect().top - 6;
+    };
+  } else { l.style.visibility = "hidden"; l.onclick = null; }
+  const inp = card.querySelector("textarea.answer, input.answer");
+  if(retry && inp){
+    // on corrige sa réponse = nouvel essai : la rangée redevient « Vérifier »
+    inp.addEventListener("input", function h(){
+      inp.removeEventListener("input", h);
+      box.classList.add("hidden");
+      l.textContent = orig.lt; l.onclick = orig.lf; l.style.visibility = "";
+      r.textContent = orig.rt; r.onclick = orig.rf;
+    });
+  }
+}
+function fitTyping(){
+  if(!isTyping()) return;
+  const vv = window.visualViewport;
+  let h = vv ? vv.height : window.innerHeight;
+  if(document.body.classList.contains("kbclosed")) h -= document.getElementById("tabs").offsetHeight;
+  const st = document.documentElement.style;
+  st.setProperty("--vvh", Math.floor(h) + "px");
+  st.setProperty("--vvtop", Math.max(0, Math.round(vv ? vv.offsetTop : 0)) + "px");
+}
+// Sortie du mode exercice (changement d'onglet, fin du jour…)
+function exitTyping(){
+  document.body.classList.remove("typing","kbclosed");
+  document.querySelectorAll(".active-card").forEach(c=>c.classList.remove("active-card"));
+  const a=document.activeElement; if(a && a.classList && a.classList.contains("answer")) a.blur();
+}
+document.addEventListener("focusin", e=>{
+  const t=e.target;
+  if(!isTouch || !t.classList || !t.classList.contains("answer") || t.tagName==="SELECT") return;
+  clearTimeout(typingT);
+  document.querySelectorAll(".active-card").forEach(c=>c.classList.remove("active-card"));
+  const card=t.closest(".card"); if(!card) return;
+  card.classList.add("active-card");
+  document.body.classList.add("typing");
+  document.body.classList.remove("kbclosed");
+  window.scrollTo(0,0);
+  fitTyping();
+  [100,300,600,1000].forEach(ms=>setTimeout(fitTyping, ms));
+});
+document.addEventListener("focusout", ()=>{
+  if(!isTyping()) return;
+  clearTimeout(typingT);
+  typingT=setTimeout(()=>{
+    const a=document.activeElement;
+    if(a && a.classList && a.classList.contains("answer") && a.tagName!=="SELECT") return;
+    document.body.classList.add("kbclosed");   // clavier fermé : on garde la mise en page
+    window.scrollTo(0,0);
+    fitTyping();
+    [100,300,600,1000].forEach(ms=>setTimeout(fitTyping, ms));
+  }, 150);
+});
+if(window.visualViewport){
+  window.visualViewport.addEventListener("resize", fitTyping);
+  window.visualViewport.addEventListener("scroll", fitTyping);
+}
+// Boutons de la carte en cours : ne ferment pas le clavier
+["pointerdown","mousedown"].forEach(ev=>document.addEventListener(ev, e=>{
+  if(!e.target.closest) return;
+  if(e.target.closest(".accents button") || (isTyping() && e.target.closest(".active-card button"))) e.preventDefault();
+}));
+
+/* ============================================================
+   PROFILS
+   ============================================================ */
+function esc(s){ return String(s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function renderPicker(){
+  const wrap=document.getElementById("profileCards");
+  wrap.innerHTML=Object.entries(PROFILES).filter(([id])=>id!=="guest").map(([id,p])=>`
+    <button class="pcard" data-id="${esc(id)}" title="${esc(p.fullName||p.name)}">
+      <div class="big" style="background:${esc(p.color)}">${esc(p.initial)}</div>
+      <b>${esc(p.name)}</b><span>${esc(p.sub)}</span>
+    </button>`).join("") + `
+    <button class="pcard new" id="newProfileBtn" type="button">
+      <div class="big">+</div>
+      <b>Nouveau</b><span>créer un profil</span>
+    </button>`;
+  wrap.querySelectorAll(".pcard[data-id]").forEach(b=> b.onclick=()=>selectProfile(b.dataset.id));
+  document.getElementById("newProfileBtn").onclick=openNewForm;
+  const g=document.getElementById("guestBtn");
+  if(g) g.onclick=()=>selectProfile("guest");
+}
+function slugify(str){
+  return str.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"");
+}
+function createLocalProfile(first, last){
+  const list = readList().length ? readList() : DEFAULT_LIST.slice();
+  const dup = list.find(m => m.firstName.toLowerCase()===first.toLowerCase() && (m.lastName||"").toLowerCase()===last.toLowerCase());
+  if(dup) return dup;
+  const base = slugify(first + (last ? "-"+last : "")) || "profil";
+  let id = base, n = 2;
+  while(list.some(m => m.id===id)) id = base + "-" + n++;
+  const m = { id, firstName:first, lastName:last, color: PALETTE[list.length % PALETTE.length] };
+  list.push(m);
+  setProfileList(list);
+  return m;
+}
+function openNewForm(){
+  document.getElementById("profileCards").classList.add("hidden");
+  document.getElementById("picker").classList.add("form-open");
+  const f=document.getElementById("newForm");
+  f.classList.remove("hidden"); f.reset();
+  document.getElementById("nfErr").textContent="";
+  document.getElementById("picker").scrollTo(0,0);
+  setTimeout(()=>document.getElementById("nfFirst").focus(), 50);
+}
+function closeNewForm(){
+  document.getElementById("newForm").classList.add("hidden");
+  document.getElementById("picker").classList.remove("form-open");
+  document.getElementById("profileCards").classList.remove("hidden");
+}
+// Quand le clavier s'ouvre (iOS ne redimensionne pas la page), on garde le champ actif visible
+["nfFirst","nfLast"].forEach(id=>{
+  document.getElementById(id).addEventListener("focus", ev=>{
+    setTimeout(()=>{ try{ ev.target.scrollIntoView({ block:"center", behavior:"smooth" }); }catch(e){} }, 250);
+  });
+});
+document.getElementById("nfCancel").onclick=closeNewForm;
+document.getElementById("newForm").onsubmit=async (ev)=>{
+  ev.preventDefault();
+  const first=document.getElementById("nfFirst").value.trim();
+  const last=document.getElementById("nfLast").value.trim();
+  const err=document.getElementById("nfErr"); const btn=document.getElementById("nfSubmit");
+  err.textContent="";
+  if(first.length<2){ err.textContent="Le prénom doit faire au moins 2 caractères."; return; }
+  btn.disabled=true;
+  try{
+    let created;
+    if(API===false){
+      created = createLocalProfile(first, last);           // hébergement statique : profil local à cet appareil
+    }else{
+      const r=await fetch("/api/profiles",{ method:"POST", headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({ firstName:first, lastName:last }) });
+      const j=await r.json().catch(()=>({}));
+      if(r.status===409 && j.profile){ err.textContent="Ce profil existe déjà, ouverture..."; }
+      else if(!r.ok){ throw new Error(j.error || "Erreur serveur ("+r.status+")"); }
+      created = j.profile;
+      await loadProfileList();
+    }
+    renderPicker();
+    closeNewForm();
+    selectProfile(created.id);
+  }catch(e){
+    err.textContent = navigator.onLine ? (e.message||"Impossible de créer le profil.") : "Hors-ligne : impossible de créer un profil.";
+  }finally{ btn.disabled=false; }
+};
+async function selectProfile(id){
+  current=id;
+  try{ localStorage.setItem(CUR_KEY, id); }catch(e){}
+  // récupère la progression depuis le serveur (repli cache si hors-ligne)
+  let data = await fetchProfileState(id);
+  if(!data) data = blankProfile();
+  if(!state.profiles) state.profiles={};
+  state.profiles[id]=data;
+  writeCache();
+  document.getElementById("picker").classList.add("hidden");
+  document.getElementById("app").classList.remove("hidden");
+  document.getElementById("tabs").classList.remove("hidden");
+  const p=PROFILES[id];
+  document.getElementById("whoName").textContent=p.name;
+  const av=document.getElementById("whoAv"); av.textContent=p.initial; av.style.background=p.color;
+  exIndex=0; switchTab("today");
+}
+document.getElementById("whoBtn").onclick=()=>{
+  if(current){ clearTimeout(saveTimer); pushState(); }   // flush le profil courant avant de switcher
+  document.getElementById("app").classList.add("hidden");
+  document.getElementById("tabs").classList.add("hidden");
+  document.getElementById("picker").classList.remove("hidden");
+};
+
+/* ============================================================
+   DÉMÉNAGEMENT here.now → serveur Hetzner
+   ============================================================ */
+const NEW_HOME = "https://aprende.77-42-35-123.sslip.io/";
+function setupMoveCard(){
+  if(API!==false || !/here\.now$/.test(location.hostname)) return;
+  document.getElementById("moveCard").classList.remove("hidden");
+  const btn=document.getElementById("moveBtn"), msg=document.getElementById("moveMsg");
+  btn.onclick=async ()=>{
+    btn.disabled=true; msg.textContent="Transfert en cours…";
+    try{
+      const cache=readCache(); delete cache.guest;
+      const r=await fetch(NEW_HOME+"api/import",{ method:"POST", headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({ profiles: readList().length?readList():DEFAULT_LIST, states: cache }) });
+      if(!r.ok) throw new Error("HTTP "+r.status);
+      const j=await r.json();
+      msg.textContent=`✓ ${j.imported.length} profil(s) transféré(s). Ouverture…`;
+      setTimeout(()=>{ location.href=NEW_HOME; }, 900);
+    }catch(e){
+      btn.disabled=false; msg.textContent="Échec du transfert ("+e.message+"). Vérifie ta connexion et réessaie.";
+    }
+  };
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+try{ current = localStorage.getItem(CUR_KEY); }catch(e){ current = null; }
+(async ()=>{
+  await loadProfileList();
+  renderPicker();
+  setupMoveCard();
+  if(API===false && /here\.now$/.test(location.hostname)) current = null;   // montre la carte de transfert
+  if(current && PROFILES[current]) selectProfile(current);
+  else current = null;
+  flushDirty();
+  // Mise en cache automatique de toute l'app pour le hors-ligne
+  if("serviceWorker" in navigator){
+    if(navigator.serviceWorker.controller){ swReady = true; }
+    registerSW();
+  }
+})();
+</script>
+</body>
+</html>

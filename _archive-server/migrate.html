@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Migrer ma progression · Aprende Español</title>
+<style>
+  :root{--bg:#f6f7fb;--card:#fff;--ink:#1d2433;--muted:#7b8496;--line:#e8ebf2;--brand:#e8542f;
+    --green:#12a150;--green-soft:#e6f6ec;--amber:#e0a800;--amber-soft:#fcf3d9;--blue:#2f6fe8;--blue-soft:#e9f0ff;
+    --font:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font);background:var(--bg);color:var(--ink);line-height:1.5;padding:20px}
+  .wrap{max-width:560px;margin:0 auto}
+  h1{font-size:24px;letter-spacing:-.5px;margin-bottom:4px}
+  .sub{color:var(--muted);margin-bottom:20px;font-size:14px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:0 6px 22px rgba(29,36,51,.06);margin-bottom:14px}
+  .prow{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--line)}
+  .prow:first-child{border-top:none}
+  .av{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:800;flex:none}
+  .prow b{font-size:15px}
+  .prow small{color:var(--muted);font-size:12.5px;display:block}
+  .tag{margin-left:auto;font-size:12px;font-weight:800;padding:4px 10px;border-radius:999px}
+  .tag.ok{background:var(--green-soft);color:var(--green)}
+  .tag.none{background:#eef0f5;color:var(--muted)}
+  .tag.err{background:var(--amber-soft);color:#a37b00}
+  .btn{display:block;width:100%;padding:15px;border:none;border-radius:14px;font-family:inherit;font-weight:800;font-size:16px;cursor:pointer;transition:filter .1s}
+  .btn.primary{background:var(--brand);color:#fff}
+  .btn.primary:disabled{opacity:.5;cursor:not-allowed}
+  .btn.primary:hover:not(:disabled){filter:brightness(1.05)}
+  .msg{margin-top:14px;font-size:14px;padding:12px 14px;border-radius:12px;display:none}
+  .msg.show{display:block}
+  .msg.good{background:var(--green-soft);color:#0d7a3d}
+  .msg.warn{background:var(--amber-soft);color:#8a6d00}
+  details{margin-top:16px;font-size:13px;color:var(--muted)}
+  summary{cursor:pointer;font-weight:700}
+  textarea{width:100%;min-height:90px;border:2px solid var(--line);border-radius:12px;padding:10px;font-family:inherit;font-size:13px;margin-top:8px;resize:vertical}
+  code{background:#eef0f5;padding:2px 6px;border-radius:6px;font-size:12px;word-break:break-all}
+  .go{display:inline-block;margin-top:16px;color:var(--brand);font-weight:800;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>☁️ Migrer ma progression</h1>
+  <p class="sub">Envoie la progression stockée sur cet appareil vers le serveur Aprende Español (synchro multi-appareils).</p>
+
+  <div class="card" id="found">
+    <div id="rows"></div>
+  </div>
+
+  <button class="btn primary" id="pushBtn" disabled>Envoyer vers le serveur</button>
+  <div class="msg" id="msg"></div>
+
+  <details id="manual">
+    <summary>Rien détecté ? Coller manuellement</summary>
+    <p style="margin-top:8px">Sur l'ancien site, ouvre la console et lance :<br>
+    <code>copy(localStorage.getItem('aprende_es_v1'))</code><br>
+    puis colle le résultat ici et clique Envoyer.</p>
+    <textarea id="paste" placeholder='{"profiles":{"dylan":{...},"rebecca":{...}}}'></textarea>
+    <button class="btn primary" id="pasteBtn" style="margin-top:10px">Importer le texte collé</button>
+  </details>
+
+  <a class="go" href="https://aprende.77-42-35-123.sslip.io" id="openApp">Ouvrir l'app →</a>
+</div>
+
+<script>
+const NEW_SERVER = "https://aprende.77-42-35-123.sslip.io";
+const OLD_KEY = "aprende_es_v1";        // format ancien : {profiles:{dylan,rebecca}, current}
+const CACHE_KEY = "aprende_cache_v1";   // format nouveau : {dylan,rebecca}
+const PROFILES = { dylan:{name:"Dylan",color:"#2f6fe8",initial:"D"}, rebecca:{name:"Rebecca",color:"#e8542f",initial:"R"} };
+
+// Récupère un objet {dylan?:state, rebecca?:state} depuis le localStorage local
+function readLocal(){
+  try{ const a = JSON.parse(localStorage.getItem(OLD_KEY)); if(a && a.profiles) return a.profiles; }catch(e){}
+  try{ const c = JSON.parse(localStorage.getItem(CACHE_KEY)); if(c && (c.dylan||c.rebecca)) return c; }catch(e){}
+  return null;
+}
+// Normalise une saisie collée (accepte {profiles:{...}} ou {dylan,rebecca} directement)
+function normalize(obj){
+  if(!obj) return null;
+  if(obj.profiles) return obj.profiles;
+  if(obj.dylan||obj.rebecca) return obj;
+  return null;
+}
+function summary(st){
+  if(!st) return "aucune donnée";
+  const day = st.day||1;
+  const vocab = st.vocab?Object.keys(st.vocab).length:0;
+  const mist = st.mistakes?st.mistakes.length:0;
+  return `Jour ${day} · ${vocab} mots · ${mist} erreur${mist>1?"s":""}`;
+}
+
+let DATA = readLocal();
+
+function render(){
+  const rows = document.getElementById("rows");
+  const found = DATA && (DATA.dylan||DATA.rebecca);
+  rows.innerHTML = Object.keys(PROFILES).map(id=>{
+    const p = PROFILES[id]; const st = DATA && DATA[id];
+    const tag = st ? `<span class="tag ok">à migrer</span>` : `<span class="tag none">rien ici</span>`;
+    return `<div class="prow"><div class="av" style="background:${p.color}">${p.initial}</div>
+      <div><b>${p.name}</b><small>${summary(st)}</small></div>${tag}</div>`;
+  }).join("");
+  document.getElementById("pushBtn").disabled = !found;
+  if(!found){
+    rows.innerHTML = `<div style="color:var(--muted);text-align:center;padding:8px">Aucune progression trouvée sur cet appareil.<br>Utilise le collage manuel ci-dessous, ou ouvre cette page depuis l'ancien site.</div>`;
+    document.getElementById("manual").open = true;
+  }
+}
+
+async function pushAll(){
+  const btn = document.getElementById("pushBtn");
+  const msg = document.getElementById("msg");
+  btn.disabled = true; btn.textContent = "Envoi en cours…";
+  const rows = document.getElementById("rows");
+  let sent = 0, fail = 0;
+  for(const id of Object.keys(PROFILES)){
+    const st = DATA && DATA[id];
+    if(!st) continue;
+    try{
+      const r = await fetch(NEW_SERVER+"/api/state/"+id, {
+        method:"PUT", headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({ state: st })
+      });
+      if(r.ok) sent++; else fail++;
+    }catch(e){ fail++; }
+  }
+  msg.className = "msg show " + (fail? "warn":"good");
+  msg.innerHTML = fail
+    ? `${sent} profil(s) envoyé(s), ${fail} échec(s). Vérifie ta connexion et réessaie.`
+    : `✅ ${sent} profil(s) migré(s) ! Ouvre l'app, ta progression est là.`;
+  btn.textContent = fail? "Réessayer" : "Migration terminée ✓";
+  btn.disabled = false;
+}
+
+document.getElementById("pushBtn").onclick = pushAll;
+document.getElementById("pasteBtn").onclick = ()=>{
+  try{
+    const obj = JSON.parse(document.getElementById("paste").value.trim());
+    const norm = normalize(obj);
+    if(!norm){ alert("Format non reconnu."); return; }
+    DATA = norm; render();
+    document.getElementById("msg").className="msg show good";
+    document.getElementById("msg").textContent="Données chargées. Clique « Envoyer vers le serveur ».";
+    window.scrollTo({top:0,behavior:"smooth"});
+  }catch(e){ alert("JSON invalide : "+e.message); }
+};
+
+render();
+</script>
+</body>
+</html>
