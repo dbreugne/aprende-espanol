@@ -1,7 +1,7 @@
 /* Xué Zhōngwén — service worker (mode avion)
    Toute l'app est mise en cache : elle marche sans réseau.
    /api/* n'est jamais mis en cache (la progression est gérée par l'app). */
-const CACHE = "xue-v2";
+const CACHE = "xue-v3";
 const ASSETS = [
   "./", "index.html", "pinyin-pro.js?v=1", "zh.js?v=1", "curriculum.js?v=1", "lexique.js?v=1", "grammaire.js?v=1",
   "manifest.webmanifest", "icon.svg", "icon-192.png", "icon-512.png",

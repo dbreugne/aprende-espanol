@@ -169,7 +169,7 @@ const ZH = (function(){
       refToks.forEach((r,k)=>{ if(r.er && !refMatched[k]) refMatched[k] = true; });
       const good = refMatched.filter(Boolean).length;
       const extra = userMark.filter(x=>!x).length;
-      const score = good - extra*0.5 - userTypo.filter(x=>x>=0).length*0.1;
+      const score = good - extra*0.5 - (m-good)*0.25 - userTypo.filter(x=>x>=0).length*0.1;
       if(!best || score>best.score) best = { score, userToks, refToks, userMark, userTypo, refMatched, good, total:m, refIndex: idx<accepted0.length?idx:0, ref, han };
     });
     const b = best;

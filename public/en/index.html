@@ -3,18 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content, maximum-scale=1, user-scalable=no">
-<title>Xué Zhōngwén · 学中文</title>
+<title>Learn English · Traduis, corrige, progresse</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon-192.png">
-<meta name="theme-color" content="#d6342b">
+<meta name="theme-color" content="#2456c9">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="学中文">
+<meta name="apple-mobile-web-app-title" content="English">
 <style>
   :root{
     --bg:#f6f7fb; --card:#ffffff; --ink:#1d2433; --muted:#7b8496;
-    --line:#e8ebf2; --brand:#d6342b; --brand-soft:#fdeceb;
+    --line:#e8ebf2; --brand:#2456c9; --brand-soft:#e8eefc;
     --green:#12a150; --green-soft:#e6f6ec;
     --amber:#e0a800; --amber-soft:#fcf3d9;
     --blue:#2f6fe8; --blue-soft:#e9f0ff;
@@ -192,6 +192,11 @@
   .exnum{display:inline-flex;align-items:center;gap:6px}
   .backex{width:30px;height:30px;border-radius:9px;border:1px solid var(--line);background:#fff;color:var(--ink);
     font-size:22px;line-height:1;font-weight:700;display:inline-grid;place-items:center;padding-bottom:2px;margin:-4px 2px -4px 0}
+  .irrt{width:100%;border-collapse:collapse;font-size:14px}
+  .irrt th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.3px;color:var(--muted);padding:9px 8px;background:var(--brand-soft)}
+  .irrt td{padding:8px;border-top:1px solid var(--line)}
+  .irrt td.fm{font-weight:800}
+  .irrt td.frr2{color:var(--muted);font-size:12px;font-style:italic}
   .th.t-brand{background:var(--brand-soft);color:var(--brand)}
   .th.t-blue{background:var(--blue-soft);color:var(--blue)}
   .th.t-green{background:var(--green-soft);color:var(--green)}
@@ -242,43 +247,6 @@
   body.typing .active-card .result:has(.reveal.show) .miss-msg{display:none}
   body.typing .active-card .mainrow{order:4;margin-top:8px}
   body.typing .active-card .btn{padding:12px}
-  /* chinois */
-  .zh{font-family:"PingFang SC","Hiragino Sans GB","Noto Sans SC","Microsoft YaHei",var(--font)}
-  /* caractère + pinyin au-dessus, chaque bloc prend la largeur du plus large */
-  ruby{display:inline-flex;flex-direction:column-reverse;align-items:center;vertical-align:bottom;margin:0 .06em;line-height:1.15}
-  rt{display:block;font-size:.5em;font-weight:600;color:var(--muted);letter-spacing:0;line-height:1.1;white-space:nowrap}
-  .es.zh{line-height:1.5}
-  .zhbig{font-family:"PingFang SC","Hiragino Sans GB","Noto Sans SC",var(--font);font-size:64px;font-weight:600;line-height:1.1;text-align:center}
-  body.typing .active-card .prompt.zhbig{font-size:52px}
-  .spk{border:1px solid var(--line);background:#fff;border-radius:9px;padding:2px 7px;font-size:14px;vertical-align:middle;margin-left:4px}
-  .gfiche summary{cursor:pointer;font-weight:800;font-size:15px;list-style:none;display:flex;align-items:center;gap:8px;justify-content:space-between}
-  .gfiche summary::-webkit-details-marker{display:none}
-  .grule{font-size:14px;color:#3d4556;margin:12px 0}
-  .gex{display:flex;flex-direction:column;gap:10px}
-  .gex .zh{font-size:19px;font-weight:700;line-height:1.5}
-  .gex small{color:var(--muted);font-size:12.5px}
-  .gfiche + .gfiche{margin-top:10px}
-  .blank{display:inline-block;min-width:1.6em;text-align:center;border-bottom:3px solid var(--brand);margin:0 3px;color:var(--brand)}
-  .blank.ok{border-color:var(--green);color:var(--green)} .blank.ko{border-color:var(--amber);color:#a37b00}
-  .qopts{display:flex;gap:10px;flex-wrap:wrap}
-  .qopt{flex:1;min-width:80px;padding:14px;border-radius:14px;border:2px solid var(--line);background:#fff;font-size:22px;font-weight:700;font-family:"PingFang SC","Noto Sans SC",var(--font)}
-  .qopt.ok{border-color:var(--green);background:var(--green-soft);color:var(--green)}
-  .qopt.ko{border-color:var(--amber);background:var(--amber-soft);color:#a37b00}
-  .tgrid{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
-  .tcolz{display:flex;flex-direction:column;align-items:center;gap:6px}
-  .tpy{font-size:18px;font-weight:700;color:var(--muted)} .tpy.ok{color:var(--green)} .tpy.ko{color:#d9730d}
-  .tbtns{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
-  .tbtn{width:44px;height:48px;border-radius:10px;border:1px solid var(--line);background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center}
-  .tbtn b{font-size:17px} .tbtn small{font-size:9px;color:var(--muted)}
-  .tbtn.on{border-color:var(--brand);background:var(--brand-soft)}
-  .tbtn.right{border-color:var(--green);background:var(--green-soft)}
-  .hzgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px}
-  .hz{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:1px;box-shadow:var(--shadow)}
-  .hz b{font-size:30px;font-weight:600;font-family:"PingFang SC","Noto Sans SC",var(--font)}
-  .hz span{font-size:13px;font-weight:700;color:var(--brand)}
-  .hz small{font-size:10.5px;color:var(--muted);text-align:center;line-height:1.2}
-  .hz.ok{border-color:#bfe6cf;background:var(--green-soft)} .hz.ko{border-color:#f3dfa8}
-  .word b.zhw{font-size:22px;font-family:"PingFang SC","Noto Sans SC",var(--font)}
   .langsw{display:inline-flex;background:#eef0f5;border-radius:999px;padding:4px;margin-bottom:18px;gap:2px}
   .langsw button{padding:8px 14px;border-radius:999px;font-weight:800;font-size:13.5px;color:var(--muted)}
   .langsw button.on{background:#fff;color:var(--ink);box-shadow:0 2px 6px rgba(0,0,0,.08)}
@@ -294,11 +262,11 @@
 <div class="overlay" id="picker">
   <div class="langsw" role="tablist" aria-label="Langue">
     <button class="" onclick="goLang('es')">🇪🇸 Espagnol</button>
-    <button class="" onclick="goLang('en')">🇬🇧 Anglais</button>
-    <button class="on" onclick="goLang('zh')">🇨🇳 Chinois</button>
+    <button class="on" onclick="goLang('en')">🇬🇧 Anglais</button>
+    <button class="" onclick="goLang('zh')">🇨🇳 Chinois</button>
   </div>
-  <h1>你好 ! 👋</h1>
-  <p>Qui apprend le chinois aujourd'hui ? Chaque profil garde sa propre progression.</p>
+  <h1>Hello! 👋</h1>
+  <p>Qui apprend l'anglais aujourd'hui ? Chaque profil garde sa propre progression.</p>
   <div class="profiles" id="profileCards"></div>
   <form class="newform hidden" id="newForm" autocomplete="off">
     <h2>✨ Nouveau profil</h2>
@@ -318,9 +286,9 @@
 
 <div class="app hidden" id="app">
   <div class="topbar">
-    <div class="brand"><span class="dot">中</span> Xué<span style="color:var(--brand)">Zhōngwén</span></div>
+    <div class="brand"><span class="dot">E</span> Learn<span style="color:var(--brand)">English</span></div>
     <div class="topright">
-    <button class="toplang" onclick="openPicker()" title="Changer de langue">🇨🇳</button>
+    <button class="toplang" onclick="openPicker()" title="Changer de langue">🇬🇧</button>
     <button class="who" id="whoBtn">
       <span class="av" id="whoAv">D</span>
       <small id="whoName">Dylan</small>
@@ -353,7 +321,7 @@
   </button>
   <button class="tab" data-tab="verbs">
     <svg viewBox="0 0 24 24" fill="none" stroke="#7b8496" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg>
-    Grammaire
+    Verbes
   </button>
   <button class="tab" data-tab="vocab">
     <svg viewBox="0 0 24 24" fill="none" stroke="#7b8496" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
@@ -363,16 +331,14 @@
 
 <div class="toast" id="toast"></div>
 
-<script src="pinyin-pro.js?v=1"></script>
-<script src="zh.js?v=1"></script>
+<script src="verbs.js?v=1"></script>
 <script src="curriculum.js?v=1"></script>
 <script src="lexique.js?v=1"></script>
-<script src="grammaire.js?v=1"></script>
 <script>
 /* ============================================================
    LANGUE (même app : espagnol à la racine, chinois dans /zh/, anglais dans /en/)
    ============================================================ */
-const LANG = "zh";
+const LANG = "en";
 const LANG_KEY = "aprende_lang";
 const LANG_DIR = { es:"", zh:"zh/", en:"en/" };
 function goLang(l){
@@ -390,10 +356,9 @@ function openPicker(){ document.getElementById("whoBtn").click(); }
 // Liste des profils : servie par l'API (/api/profiles), miroir local pour le hors-ligne.
 const isTouch = window.matchMedia("(pointer:coarse)").matches;
 const GUEST = { name:"Invité", color:"#7b8496", initial:"?", sub:"local, non synchronisé" };
-const TAGLINES = { dylan:"加油！", rebecca:"你好！" };
-const LIST_KEY = "aprende_profiles_v1";   // liste des profils partagée avec l'espagnol
-const API_STATE = "/api/zh/state/";         // progression chinoise séparée côté serveur
-const OLD_KEY  = "xue_old_v0";      // ancien format statique : {profiles:{dylan,rebecca}, current}
+const TAGLINES = { dylan:"Let's go!", rebecca:"You got this!" };
+const LIST_KEY = "aprende_profiles_v1";
+const OLD_KEY  = "eng_old_v0";      // ancien format statique : {profiles:{dylan,rebecca}, current}
 const DEFAULT_LIST = [
   { id:"dylan",   firstName:"Dylan",   lastName:"", color:"#2f6fe8" },
   { id:"rebecca", firstName:"Rebecca", lastName:"", color:"#e8542f" },
@@ -410,7 +375,7 @@ function metaToCard(m){
     fullName: m.lastName ? m.firstName+" "+m.lastName : m.firstName,
     color: m.color,
     initial: (m.firstName[0]||"?").toUpperCase(),
-    sub: m.lastName || TAGLINES[m.id] || "你好！",
+    sub: m.lastName || TAGLINES[m.id] || "Hello!",
   };
 }
 function setProfileList(list){
@@ -435,9 +400,9 @@ async function loadProfileList(){
 function isGuest(){ return current === "guest"; }
 const ACQUIRE_AT = 2;              // nb de bonnes réponses pour "acquis"
 // Données côté serveur (base SQLite) + miroir local pour le hors-ligne.
-const CACHE_KEY = "xue_cache_v1";   // miroir local des profils
-const CUR_KEY   = "xue_current";    // profil actif sur CET appareil
-// Reprise de l'ancienne progression statique (clé xue_old_v0) dans le miroir local, une seule fois
+const CACHE_KEY = "eng_cache_v1";   // miroir local des profils
+const CUR_KEY   = "eng_current";    // profil actif sur CET appareil
+// Reprise de l'ancienne progression statique (clé aprende_es_v1) dans le miroir local, une seule fois
 (function importOldStore(){
   try{
     if(localStorage.getItem(CACHE_KEY)) return;
@@ -457,7 +422,8 @@ function blankProfile(){ return { day:1, done:{}, vocab:{}, streak:0 }; }
 // Sauvegarde : miroir local immédiat + envoi serveur débounce.
 // Hors-ligne (avion) : les profils modifiés sont marqués « à synchroniser »
 // et envoyés dès que le réseau revient.
-const DIRTY_KEY = "xue_dirty_v1";
+const DIRTY_KEY = "eng_dirty_v1";
+const API_STATE = "/api/en/state/";   // progression anglaise séparée côté serveur
 function readDirty(){ try{ return JSON.parse(localStorage.getItem(DIRTY_KEY)) || {}; }catch(e){ return {}; } }
 function setDirty(id, on){
   const d = readDirty();
@@ -533,10 +499,163 @@ async function fetchProfileState(id){
 }
 
 /* ============================================================
-   CORRECTION (moteur chinois : zh.js)
+   NORMALISATION & COMPARAISON MOT À MOT
    ============================================================ */
-function norm(w){ return String(w).toLowerCase(); }
-function evaluate(userText, accepted){ return ZH.evaluate(userText, accepted); }
+function stripAccents(s){ return s.normalize("NFD").replace(/[̀-ͯ]/g,""); }
+/* distance d'édition (Levenshtein) pour détecter les fautes d'orthographe */
+function lev(a,b){
+  const m=a.length,n=b.length;
+  if(!m) return n; if(!n) return m;
+  let prev=Array.from({length:n+1},(_,j)=>j), cur=new Array(n+1);
+  for(let i=1;i<=m;i++){
+    cur[0]=i;
+    for(let j=1;j<=n;j++){
+      const cost=a[i-1]===b[j-1]?0:1;
+      cur[j]=Math.min(prev[j]+1, cur[j-1]+1, prev[j-1]+cost);
+    }
+    [prev,cur]=[cur,prev];
+  }
+  return prev[n];
+}
+// Contractions développées des deux côtés : I'm = I am, don't = do not…
+const NO_APOS = { dont:"do not", doesnt:"does not", didnt:"did not", isnt:"is not", arent:"are not", wasnt:"was not",
+  werent:"were not", havent:"have not", hasnt:"has not", hadnt:"had not", cant:"can not", wont:"will not",
+  couldnt:"could not", shouldnt:"should not", wouldnt:"would not", im:"i am", ive:"i have", thats:"that is", whats:"what is" };
+function expandContractions(s){
+  return s.toLowerCase().replace(/[’‘]/g,"'")
+    .replace(/\b[a-z]+\b/g, w => NO_APOS[w] || w)
+    .replace(/\b\d{1,4}\b/g, d => (+d>0 && +d<10000) ? numToEs(+d) : d)
+    .replace(/\bwon't\b/g,"will not").replace(/\bcan't\b/g,"can not").replace(/\bcannot\b/g,"can not")
+    .replace(/\bshan't\b/g,"shall not").replace(/n't\b/g," not")
+    .replace(/'m\b/g," am").replace(/'re\b/g," are").replace(/'ve\b/g," have")
+    .replace(/'ll\b/g," will").replace(/'d\b/g," would").replace(/'s\b/g," is");
+}
+function tokenize(s){
+  return expandContractions(s)
+    .replace(/[¿?¡!.,;:"«»]/g," ")
+    .replace(/\s+/g," ").trim()
+    .split(" ").filter(Boolean);
+}
+function norm(w){ return stripAccents(w.toLowerCase()); }
+
+/* Faute de frappe = pas une erreur : lettre doublée ou oubliée (neccesito / necesito),
+   confusion d'orthographe qui se prononce pareil (b/v, ll/y, z/s, h muette, g/j),
+   ou 2 lettres inversées. Une vraie faute de grammaire (vivimos / vivíamos) reste fausse. */
+function osa(a,b){
+  const m=a.length,n=b.length, d=[];
+  for(let i=0;i<=m;i++){ d[i]=[i]; }
+  for(let j=0;j<=n;j++) d[0][j]=j;
+  for(let i=1;i<=m;i++) for(let j=1;j<=n;j++){
+    const c=a[i-1]===b[j-1]?0:1;
+    d[i][j]=Math.min(d[i-1][j]+1, d[i][j-1]+1, d[i-1][j-1]+c);
+    if(i>1&&j>1&&a[i-1]===b[j-2]&&a[i-2]===b[j-1]) d[i][j]=Math.min(d[i][j], d[i-2][j-2]+1);
+  }
+  return d[m][n];
+}
+const collapse = w => w.replace(/(.)\1+/g,"$1");
+// Anglais : wich = which, tomorow = tomorrow, recieve = receive (inversion)
+const sound = w => collapse(w.replace(/wh/g,"w").replace(/ph/g,"f"));
+const sortedLetters = w => w.split("").sort().join("");
+function sameWord(u, r){   // u, r normalisés (minuscules, sans accents)
+  if(u===r) return "exact";
+  if(collapse(u)===collapse(r) || sound(u)===sound(r)) return "typo";
+  if(r.length>=5 && sortedLetters(u)===sortedLetters(r) && osa(u,r)===1) return "typo";
+  return "";
+}
+// Pronoms sujets ajoutés par l'utilisateur : (espagnol) ; désactivé en anglais
+const OPT_PRON = new Set();   // en anglais le sujet est obligatoire
+
+/* LCS entre 2 listes de tokens normalisés -> alignement (fautes de frappe tolérées) */
+function align(userTok, refTok){
+  const a = userTok.map(norm), b = refTok.map(norm);
+  const n=a.length, m=b.length;
+  const eq = Array.from({length:n},(_,i)=>b.map(bj=>sameWord(a[i],bj)));
+  const dp = Array.from({length:n+1},()=>new Array(m+1).fill(0));
+  for(let i=n-1;i>=0;i--) for(let j=m-1;j>=0;j--)
+    dp[i][j] = eq[i][j] ? dp[i+1][j+1]+1 : Math.max(dp[i+1][j],dp[i][j+1]);
+  const userMark = new Array(n).fill(false);   // true = mot juste
+  const userTypo = new Array(n).fill(-1);      // index du mot attendu si faute de frappe
+  const refMatched = new Array(m).fill(false);
+  let i=0,j=0;
+  while(i<n && j<m){
+    if(eq[i][j] && dp[i][j]===dp[i+1][j+1]+1){
+      userMark[i]=true; refMatched[j]=true;
+      if(eq[i][j]==="typo") userTypo[i]=j;
+      i++; j++;
+    }
+    else if(dp[i+1][j] >= dp[i][j+1]) i++;
+    else j++;
+  }
+  return { userMark, userTypo, refMatched };
+}
+
+/* Compare la réponse à toutes les variantes acceptées, garde la meilleure */
+// « Ayer comí… » = « Comí… ayer » : un adverbe de temps en tête ou en fin est accepté aux deux places
+const MOVABLE = new Set(["yesterday","today","tomorrow","now","tonight","finally","then","luckily","fortunately","usually"]);
+// Groupes de temps qui peuvent aller en tête ou en fin de phrase
+const MOVABLE_GROUPS = ["last weekend","last week","last year","last night","next year","next week","this morning","this evening",
+  "this weekend","every day","every summer","every week","after work","at first","in the end","in autumn","in my opinion",
+  "on the first day","when i was little","when i was a child","if i have time","if it rains","even if it is cold"]
+  .map(g=>g.split(" "));
+function withMovedAdverbs(accepted){
+  const out = accepted.slice();
+  accepted.forEach(ref=>{
+    const t = tokenize(ref);
+    if(t.length<3) return;
+    if(MOVABLE.has(t[0])) out.push(t.slice(1).concat(t[0]).join(" "));
+    if(MOVABLE.has(t[t.length-1])) out.push([t[t.length-1]].concat(t.slice(0,-1)).join(" "));
+    MOVABLE_GROUPS.forEach(g=>{
+      const n = g.length;
+      if(t.length>n+1 && g.every((w,i)=>t[i]===w)) out.push(t.slice(n).concat(g).join(" "));
+      if(t.length>n+1 && g.every((w,i)=>t[t.length-n+i]===w)) out.push(g.concat(t.slice(0,-n)).join(" "));
+    });
+  });
+  return out;
+}
+function evaluate(userText, accepted0){
+  const userTok = tokenize(userText);
+  const accepted = withMovedAdverbs(accepted0);
+  let best=null;
+  accepted.forEach((ref, idx)=>{
+    const refTok = tokenize(ref);
+    const {userMark, userTypo, refMatched} = align(userTok, refTok);
+    // pronom sujet en plus (yo, ella…) = accepté
+    userMark.forEach((ok,i)=>{ if(!ok && OPT_PRON.has(userTok[i]) && !refTok.includes(userTok[i])) userMark[i]="pron"; });
+    const good = refMatched.filter(Boolean).length;
+    const total = refTok.length;
+    const extra = userMark.filter(x=>!x).length;
+    const typos = userTypo.filter(x=>x>=0).length;
+    const score = good - extra*0.5 - (total-good)*0.25 - typos*0.1;   // à égalité, la variante complète gagne
+    if(!best || score>best.score)
+      best = { score, userTok, userMark, userTypo, refTok, refMatched, good, total, refIndex: idx<accepted0.length ? idx : 0 };
+  });
+  best.perfect = best.refMatched.every(Boolean) && best.userMark.every(Boolean);
+  best.typos = best.userTypo.map((r,u)=> r>=0 ? {u:best.userTok[u], r:best.refTok[r]} : null).filter(Boolean);
+
+  // Appariement des "presque bons" (plus éloignés qu'une faute de frappe) : faute d'orthographe
+  best.userNear = new Array(best.userTok.length).fill(false);
+  best.nearPairs = [];
+  const usedR = new Set();
+  best.userMark.forEach((matched,ui)=>{
+    if(matched) return;
+    let bestR=-1, bestD=Infinity;
+    best.refMatched.forEach((rm,ri)=>{
+      if(rm || usedR.has(ri)) return;
+      const d = lev(norm(best.userTok[ui]), norm(best.refTok[ri]));
+      if(d<bestD){ bestD=d; bestR=ri; }
+    });
+    if(bestR>=0){
+      const maxLen = Math.max(best.refTok[bestR].length, best.userTok[ui].length);
+      if(bestD <= Math.max(2, Math.floor(maxLen*0.4))){
+        usedR.add(bestR);
+        best.userNear[ui]=true;
+        best.nearPairs.push({u:ui, r:bestR});
+      }
+    }
+  });
+  best.missing = best.refTok.filter((_,k)=>!best.refMatched[k] && !usedR.has(k));
+  return best;
+}
 
 /* ============================================================
    VOCABULAIRE
@@ -544,7 +663,6 @@ function evaluate(userText, accepted){ return ZH.evaluate(userText, accepted); }
 function updateVocab(res){
   const v = profile().vocab;
   res.refTok.forEach((w,k)=>{
-    if(!ZH.isHan(w)) return;
     const key = norm(w);
     if(!v[key]) v[key] = { es:w, ok:0, ko:0 };
     else v[key].es = w; // garde la forme accentuée de référence
@@ -652,12 +770,12 @@ function renderToday(){
     <div class="card">
       <div class="ex-count">
         <span class="exnum">${exHistory.length?`<button class="backex" id="prevEx" aria-label="Phrase précédente">‹</button>`:""}Phrase ${exIndex+1} / ${total}${redo?` · <span style="color:#a37b00">🔁 à refaire</span>`:""}${forceShow&&rec.cleared[exIndex]?` · <span style="color:var(--green)">✓ déjà validée</span>`:""}</span>
-        <span class="chip ${tenseChip(s.tag)}">${s.tag}</span>
+        <span class="chip ${tenseChip(s.tense)}">${s.tense}</span>
       </div>
-      <div class="prompt-label">Traduis en chinois</div>
+      <div class="prompt-label">Traduis en anglais</div>
       <div class="prompt">${escapeHtml(s.fr)}</div>
 
-      <textarea class="answer" id="answer" rows="2" placeholder="Pinyin ou caractères…" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="send"></textarea>
+      <textarea class="answer" id="answer" rows="2" placeholder="Écris ta traduction…" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="send"></textarea>
       <div class="accents" id="accents"></div>
 
       <div class="btnrow mainrow">
@@ -687,7 +805,7 @@ function doCheck(){
   const val = ta.value.trim();
   if(!val){ toast("Écris une réponse d'abord ✍️"); return; }
   attempt++;
-  const res = evaluate(val, s.zh);
+  const res = evaluate(val, s.es);
   const dayNum = day.day;
   const rec = dayRec(dayNum, true);
   const firstAppearance = !rec.answered[exIndex];
@@ -702,7 +820,7 @@ function doCheck(){
       resolveMistake(mk);
     } else {
       delete rec.cleared[exIndex];   // phrase revue et ratée : elle revient
-      logMistake({ type:"t", k:mk, fr:s.fr, es:s.zh, tip:s.tip, tense:s.tag, last:val });
+      logMistake({ type:"t", k:mk, fr:s.fr, es:s.es, tip:s.tip, tense:s.tense, last:val });
     }
   }
   rec.correct = countIn(rec.first, day.sentences.length);
@@ -714,7 +832,7 @@ function doCheck(){
 
 function typoHTML(res){
   if(!res.typos || !res.typos.length) return "";
-  return `<div class="hint-msg">✍️ Petite faute (ton ou caractère homophone, en orange), pas à refaire : ${res.typos.map(t=>`<b style="color:#d9730d">${escapeHtml(t.u)}</b> → <b>${escapeHtml(t.r)}</b>`).join(", ")}</div>`;
+  return `<div class="hint-msg">✍️ Petite faute de frappe (en orange), pas à refaire : ${res.typos.map(t=>`<b style="color:#d9730d">${escapeHtml(t.u)}</b> → <b>${escapeHtml(t.r)}</b>`).join(", ")}</div>`;
 }
 function userLineHTML(res){
   return res.userTok.map((w,i)=>
@@ -730,7 +848,7 @@ function renderResult(res, s){
 
   let verdict, msg="";
   if(res.perfect && first){
-    verdict = `<div class="verdict"><span class="badge" style="background:var(--green)">✓</span> 太棒了 ! Phrase validée.</div>`;
+    verdict = `<div class="verdict"><span class="badge" style="background:var(--green)">✓</span> Perfect! Phrase validée.</div>`;
     msg = typoHTML(res);
   } else if(res.perfect){
     verdict = `<div class="verdict"><span class="badge" style="background:var(--blue)">✓</span> Juste ! Elle reviendra plus tard : à valider du premier coup.</div>`;
@@ -739,10 +857,11 @@ function renderResult(res, s){
     const near = res.nearPairs.length;
     const extra = res.userMark.filter(x=>!x).length - near;
     const miss = res.missing.length;
-    verdict = `<div class="verdict"><span class="badge" style="background:var(--amber)">!</span> ${res.good}/${res.total} justes · ${first?"elle reviendra plus tard":"pas encore"}</div>`;
+    verdict = `<div class="verdict"><span class="badge" style="background:var(--amber)">!</span> ${res.good}/${res.total} mots justes · ${first?"elle reviendra plus tard":"pas encore"}</div>`;
     let parts=[];
+    if(near)  parts.push(`${near} mot${near>1?"s":""} mal écrit${near>1?"s":""} (surligné${near>1?"s":""})`);
     if(extra) parts.push(`${extra} mot${extra>1?"s":""} en trop`);
-    if(miss)  parts.push(`${miss} caractère${miss>1?"s":""} manquant${miss>1?"s":""}`);
+    if(miss)  parts.push(`${miss} mot${miss>1?"s":""} manquant${miss>1?"s":""}`);
     msg = `<div class="hint-msg miss-msg">${parts.join(" · ")}. Corrige ta réponse puis revérifie, ou regarde la correction.</div>` + typoHTML(res);
   }
   const lastOne = nextPending(currentDayData(), exIndex)===-1;
@@ -754,11 +873,11 @@ function renderResult(res, s){
     ${(!res.perfect) ? `
       <div class="reveal" id="reveal">
         <div class="lbl">Correction</div>
-        <div class="es zh">${ZH.ruby(s.zh[res.refIndex||0])} ${speakBtn(s.zh[res.refIndex||0])}</div>
+        <div class="es">${escapeHtml(s.es[res.refIndex||0])}</div>
         ${s.tip?`<div class="tip">💡 ${escapeHtml(s.tip)}</div>`:""}
       </div>` : `
       <div class="reveal show" style="background:var(--green-soft)">
-        <div class="es zh" style="font-size:19px">${ZH.ruby(s.zh[res.refIndex||0])} ${speakBtn(s.zh[res.refIndex||0])}</div>
+        ${res.typos.length?`<div class="es" style="font-size:16px">${escapeHtml(s.es[res.refIndex||0])}</div>`:""}
         ${s.tip?`<div class="tip" style="color:#3a6b4e">💡 ${escapeHtml(s.tip)}</div>`:""}
       </div>`}
     <div class="btnrow">
@@ -776,7 +895,7 @@ function renderResult(res, s){
   document.getElementById("nextBtn").onclick = ()=>nextEx();
   mirrorResult(box);
 
-  if(res.perfect && first) toast("很好 ! 🎉");
+  if(res.perfect && first) toast("Well done! 🎉");
 }
 
 function prevEx(){
@@ -830,7 +949,7 @@ function celebrateHTML(day, rec){
     <div class="card celebrate">
       <div class="big">🎉</div>
       <h3>${dayLabel(day)} terminé !</h3>
-      <p>${perfectCount}/${day.sentences.length} phrases justes dès le premier essai. ${hasNext?"Le jour suivant est débloqué.":"Tu as fini le parcours actuel. 太厉害了 !"}</p>
+      <p>${perfectCount}/${day.sentences.length} phrases justes dès le premier essai. ${hasNext?"Le jour suivant est débloqué.":"Tu as fini le parcours actuel. Amazing!"}</p>
       <div class="btnrow" style="max-width:340px;margin:0 auto">
         <button class="btn ghost" id="reviewBtn">Refaire ce jour</button>
         ${hasNext?`<button class="btn primary" id="continueBtn">Continuer →</button>`:""}
@@ -903,17 +1022,18 @@ function renderReview(){
   let card;
   if(it.type==="v"){
     card=`<div class="ex-count"><span>Révision · ${remaining} en attente</span><span class="chip blue">${escapeHtml(it.tense||"lexique")}</span></div>
-      <div class="prompt-label">${it.tense==="nombre"?"Écris ce nombre en chinois":"Comment dit-on en chinois ?"}</div><div class="prompt">${escapeHtml(it.fr)}</div>
-      <textarea class="answer" id="revAnswer" rows="1" placeholder="Pinyin ou caractères…" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="send"></textarea>`;
+      <div class="prompt-label">${it.tense==="nombre"?"Écris ce nombre en anglais":"Comment dit-on en anglais ?"}</div><div class="prompt">${escapeHtml(it.fr)}</div>
+      <textarea class="answer" id="revAnswer" placeholder="Ta réponse…" autocomplete="off" autocapitalize="off" spellcheck="false" rows="1" autocorrect="off" enterkeyhint="send"></textarea>`;
   } else if(it.type==="t"){
     card=`<div class="ex-count"><span>Révision · ${remaining} en attente</span><span class="chip ${tenseChip(it.tense||"")}">${it.tense||"phrase"}</span></div>
-      <div class="prompt-label">Traduis en chinois</div><div class="prompt">${escapeHtml(it.fr)}</div>
-      <textarea class="answer" id="revAnswer" rows="2" placeholder="Pinyin ou caractères…" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="send"></textarea>`;
+      <div class="prompt-label">Traduis en anglais</div><div class="prompt">${escapeHtml(it.fr)}</div>
+      <textarea class="answer" id="revAnswer" rows="2" placeholder="Ta traduction…" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="send"></textarea>`;
   } else {
-    card=`<div class="ex-count"><span>Révision · ${remaining} en attente</span><span class="chip amber">caractère</span></div>
-      <div class="prompt-label">Écris le pinyin de ce caractère</div>
-      <div class="prompt zhbig">${escapeHtml(it.fr)}</div>
-      <textarea class="answer" id="revAnswer" rows="1" placeholder="ex : hǎo, hao3 ou hao" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="send"></textarea>`;
+    card=`<div class="ex-count"><span>Révision · ${remaining} en attente</span><span class="chip ${tenseChip(it.tenseLabel)}">${it.tenseLabel}</span></div>
+      <div class="prompt-label">Conjugue ce verbe</div>
+      <div class="prompt" style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap"><span>${it.inf}</span><span style="font-size:14px;font-weight:600;color:var(--muted)">${it.frVerb||""}</span></div>
+      <div style="font-size:17px;margin:-6px 0 16px"><b style="color:var(--brand)">${CONJ.PRONOUNS[it.person]}</b> <span style="color:var(--muted)">· ${it.tenseLabel.toLowerCase()}</span></div>
+      <textarea class="answer" id="revAnswer" placeholder="Forme conjuguée…" autocomplete="off" autocapitalize="off" spellcheck="false" rows="1" autocorrect="off" enterkeyhint="send"></textarea>`;
   }
   el.innerHTML=`
     <div class="dayhead">
@@ -939,43 +1059,58 @@ function doReviewCheck(){
   const val=document.getElementById("revAnswer").value.trim();
   if(!val){ toast("Écris une réponse ✍️"); return; }
   const box=document.getElementById("revResult"); box.classList.remove("hidden");
-  const okHead = (extra)=>`<div class="verdict"><span class="badge" style="background:var(--green)">✓</span> Corrigé ! Erreur retirée du journal.</div>${extra||""}`;
-  const next = `<div class="btnrow"><button class="btn primary" id="revNext">Continuer →</button></div>`;
 
-  if(it.type==="v" || it.type==="h"){
-    const r = it.type==="v" ? lexCheck(val, { zh:it.es[0], alt:it.es.slice(1) }) : hanziCheck(val, { s:it.s, t:it.t, py:it.es[0] });
-    const answerHtml = it.type==="v" ? `${ZH.ruby(it.es[0])} ${speakBtn(it.es[0])}` : `${escapeHtml(it.fr)} · ${escapeHtml(it.es[0])} ${speakBtn(it.fr)}`;
-    if(r.ok){
+  if(it.type==="v"){
+    const w={ es:it.es[0], alt:it.es.slice(1) };
+    const r=lexCheck(val, w);
+    if(r==="ok"){
       resolveMistake(it.k);
-      box.innerHTML = okHead(r.typo ? `<div class="hint-msg">✍️ Petite faute (en orange), pas à refaire : <b style="color:#d9730d">${escapeHtml(r.typo)}</b></div>` : "")
-        + `<div class="reveal show"><div class="es zh">${answerHtml}</div></div>` + next;
+      box.innerHTML=`<div class="verdict"><span class="badge" style="background:var(--green)">✓</span> Corrigé ! <span style="color:var(--green)">${escapeHtml(w.es)}</span></div>
+        <div class="btnrow"><button class="btn primary" id="revNext">Continuer →</button></div>`;
       toast("Erreur corrigée 🎯");
     } else {
       bumpMistake(it.k); moveToEnd(it.k);
-      box.innerHTML=`<div class="verdict"><span class="badge" style="background:var(--amber)">!</span> Pas encore juste.</div>
+      box.innerHTML=`<div class="verdict"><span class="badge" style="background:var(--amber)">${r==="accent"?"~":"!"}</span> ${r==="accent"?"Presque ! Juste un accent.":"Pas encore juste."}</div>
         <div class="yourline"><span class="w bad">${escapeHtml(val)}</span></div>
-        <div class="reveal show" style="background:var(--amber-soft)"><div class="lbl" style="color:#a37b00">La bonne réponse</div><div class="es zh" style="color:#a37b00">${answerHtml}</div></div>
+        <div class="reveal show" style="background:var(--amber-soft)"><div class="lbl" style="color:#a37b00">La bonne réponse</div><div class="es" style="color:#a37b00">${escapeHtml(w.es)}</div></div>
         <div class="btnrow"><button class="btn primary" id="revNext">Suivant →</button></div>`;
     }
-  } else {
+  } else if(it.type==="t"){
     const res=evaluate(val, it.es); updateVocab(res);
     const yourHtml=userLineHTML(res);
-    const ref = it.es[res.refIndex||0];
     if(res.perfect){
       resolveMistake(it.k);
-      box.innerHTML = okHead(`<div class="yourline">${yourHtml}</div>${typoHTML(res)}`)
-        + `<div class="reveal show"><div class="es zh">${ZH.ruby(ref)} ${speakBtn(ref)}</div></div>` + next;
+      box.innerHTML=`<div class="verdict"><span class="badge" style="background:var(--green)">✓</span> Corrigé ! Erreur retirée du journal.</div>
+        <div class="yourline">${yourHtml}</div>${typoHTML(res)}
+        <div class="btnrow"><button class="btn primary" id="revNext">Continuer →</button></div>`;
       toast("Erreur corrigée 🎯");
     } else {
       bumpMistake(it.k); moveToEnd(it.k); it.last=val; save();
-      const extra=res.userMark.filter(x=>!x).length, miss=res.missing.length;
-      let parts=[]; if(extra)parts.push(`${extra} mot${extra>1?"s":""} en trop`); if(miss)parts.push(`${miss} caractère${miss>1?"s":""} manquant${miss>1?"s":""}`);
+      const near=res.nearPairs.length, extra=res.userMark.filter(x=>!x).length-near, miss=res.missing.length;
+      let parts=[]; if(near)parts.push(`${near} faute${near>1?"s":""} d'orthographe`); if(extra)parts.push(`${extra} mot${extra>1?"s":""} en trop`); if(miss)parts.push(`${miss} mot${miss>1?"s":""} manquant${miss>1?"s":""}`);
       box.innerHTML=`<div class="verdict"><span class="badge" style="background:var(--amber)">!</span> Pas encore · ${res.good}/${res.total}</div>
         <div class="yourline">${yourHtml||'<span class="hint-msg">(vide)</span>'}</div>
-        <div class="hint-msg miss-msg">${parts.join(" · ")}. Elle restera dans le journal et reviendra.</div>${typoHTML(res)}
-        <div class="reveal" id="revReveal"><div class="lbl">Correction</div><div class="es zh">${ZH.ruby(ref)} ${speakBtn(ref)}</div>${it.tip?`<div class="tip">💡 ${escapeHtml(it.tip)}</div>`:""}</div>
+        <div class="hint-msg miss-msg">${parts.join(" · ")}. Elle restera dans le journal et reviendra.</div>
+        <div class="reveal" id="revReveal"><div class="lbl">Correction</div><div class="es">${escapeHtml(it.es[res.refIndex||0])}</div>${it.tip?`<div class="tip">💡 ${escapeHtml(it.tip)}</div>`:""}</div>
         <div class="btnrow"><button class="btn ghost" id="revRevealBtn">Voir la correction</button><button class="btn primary" id="revNext">Suivant →</button></div>`;
       const rv=document.getElementById("revRevealBtn"); if(rv) rv.onclick=()=>{ document.getElementById("revReveal").classList.add("show"); rv.remove(); };
+    }
+  } else {
+    const expected=conjExpected({inf:it.inf,tenseKey:it.tenseKey,person:it.person});
+    const exact=conjOk(val, expected);
+    const accentOnly=false;
+    if(exact){
+      resolveMistake(it.k);
+      box.innerHTML=`<div class="verdict"><span class="badge" style="background:var(--green)">✓</span> Corrigé ! <span style="color:var(--green)">${escapeHtml(expected)}</span></div>
+        <div class="btnrow"><button class="btn primary" id="revNext">Continuer →</button></div>`;
+      toast("Erreur corrigée 🎯");
+    } else {
+      bumpMistake(it.k); moveToEnd(it.k);
+      const amb=accentOnly?"Presque ! Juste un accent.":"Pas encore juste.";
+      box.innerHTML=`<div class="verdict"><span class="badge" style="background:var(--amber)">${accentOnly?"~":"!"}</span> ${amb}</div>
+        <div class="yourline"><span class="w bad">${escapeHtml(val)}</span></div>
+        <div class="reveal show" style="background:var(--amber-soft)"><div class="lbl" style="color:#a37b00">La bonne forme</div><div class="es" style="color:#a37b00">${escapeHtml(expected)}</div><div class="tip" style="color:#8a6d00">${escapeHtml(it.inf)} · ${escapeHtml(CONJ.PRONOUNS[it.person])} · ${escapeHtml(it.tenseLabel.toLowerCase())}</div></div>
+        <div class="btnrow"><button class="btn primary" id="revNext">Suivant →</button></div>`;
     }
   }
   document.getElementById("revNext").onclick=()=>{ reviewCurrent=null; renderReview(); if(!document.body.classList.contains("typing")) window.scrollTo({top:0,behavior:"smooth"}); };
@@ -1037,7 +1172,7 @@ function renderVocab(){
 
   const cards = list.length? list.map(r=>`
     <div class="word">
-      <b class="zhw">${escapeHtml(r.es)}</b><small style="color:var(--brand);font-weight:700">${escapeHtml(ZH.pinyinOf(r.es))}</small>
+      <b>${escapeHtml(r.es)}</b>
       <small>${vocabFilter==="acquis"?`✓ ${r.ok} fois juste`:`${r.ko} erreur${r.ko>1?"s":""} · ${r.ok} juste`}</small>
     </div>`).join("")
     : `<div class="empty"><div class="big">${vocabFilter==="acquis"?"🌱":"✨"}</div>
@@ -1066,9 +1201,9 @@ function bindVocabSeg(el){
 }
 
 /* ============================================================
-   LEXIQUE PAR THÈME (flashcards FR → chinois) + NOMBRES
+   LEXIQUE DES COURS (flashcards FR → ES) + NOMBRES
    ============================================================ */
-let lexSet = "all";       // "all" | id de thème | "num"
+let lexSet = "all";       // "all" | id de cours | "num"
 let lexCurrent = null;    // carte en cours
 function lexStore(){ if(!profile().lex) profile().lex={}; return profile().lex; }
 function lexWords(){
@@ -1077,45 +1212,45 @@ function lexWords(){
   sets.forEach(l=> l.words.forEach(w=> out.push(Object.assign({ set:l.id }, w))));
   return out;
 }
-function lexKey(w){ return "v|"+w.set+"|"+w.zh; }
+function lexKey(w){ return "v|"+w.set+"|"+w.es; }
 function lexMastered(){
   const s=lexStore(); let n=0;
   lexWords().forEach(w=>{ const r=s[lexKey(w)]; if(r && r.ok>=ACQUIRE_AT && r.ok>r.ko) n++; });
   return n;
 }
+const NUM_U = ["zero","one","two","three","four","five","six","seven","eight","nine","ten","eleven","twelve","thirteen","fourteen","fifteen","sixteen","seventeen","eighteen","nineteen"];
+const NUM_T = {2:"twenty",3:"thirty",4:"forty",5:"fifty",6:"sixty",7:"seventy",8:"eighty",9:"ninety"};
+// britannique : « one hundred and five » (le « and » est facultatif à la correction)
+function numToEs(n){
+  if(n<20) return NUM_U[n];
+  if(n<100){ const u=n%10; return NUM_T[Math.floor(n/10)] + (u?"-"+NUM_U[u]:""); }
+  if(n<1000){ const r=n%100; return NUM_U[Math.floor(n/100)] + " hundred" + (r?" and "+numToEs(r):""); }
+  const th=Math.floor(n/1000), r=n%1000;
+  return numToEs(th) + " thousand" + (r ? (r<100 ? " and " : " ") + numToEs(r) : "");
+}
 function newLexCard(){
   if(lexSet==="num"){
     const x=Math.random();
     const n = x<.5 ? 1+randInt(100) : x<.8 ? 100+randInt(900) : 1000+randInt(1100);
-    const a = ZH.numAnswers(n);
-    lexCurrent = { set:"num", fr:String(n), zh:a[0], alt:a.slice(1) };
+    const main = numToEs(n);
+    lexCurrent = { set:"num", fr:String(n), es:main, alt:[...new Set([main.replace(/ and /g," "), main.replace(/^one (hundred|thousand)/,"a $1")])].filter(x=>x!==main) };
     return;
   }
   const words = lexWords(), s = lexStore();
+  // priorité aux mots jamais vus ou ratés
   const score = w=>{ const r=s[lexKey(w)]; return r ? r.ok - r.ko*2 + Math.random()*1.5 : -1 + Math.random(); };
   const sorted = words.filter(w=>!lexCurrent || lexKey(w)!==lexKey(lexCurrent)).sort((a,b)=>score(a)-score(b));
   lexCurrent = sorted[randInt(Math.min(6, sorted.length))] || words[0];
 }
-// Réponse en caractères ou en pinyin ; ton faux / homophone = petite faute (validé)
+function lexNorm(t){ return expandContractions(t).replace(/[?!.,;:"«»-]/g," ").replace(/\s+/g," ").trim(); }
+function dropArticle(t){ return t.replace(/^(the|a|an|to) /,""); }
 function lexCheck(val, w){
-  const r = ZH.evaluate(val, [w.zh].concat(w.alt||[]));
-  return { ok: r.perfect, typo: r.typos.map(t=>`${t.u} → ${t.r}`).join(", "), res: r };
-}
-// Pinyin d'un caractère (lecture du mot d'exemple)
-function hanziReading(h){
-  if(h.c==="不") return { s:"bu", t:4, py:"bù" };   // lecture de base (bú seulement devant un 4e ton)
-  if(h.c==="一") return { s:"yi", t:1, py:"yī" };
-  const t = ZH.tokensOf(h.w).find(x=>x.h===h.c) || ZH.tokensOf(h.c)[0];
-  return { s:t.s, t:t.t, py:t.py };
-}
-function hanziCheck(val, rd){
-  const toks = ZH.parsePinyin(val, [rd]).filter(t=>!t.bad);
-  if(toks.length!==1) return { ok:false };
-  const u = toks[0];
-  const base = u.s===rd.s || u.s.replace(/v/g,"u")===rd.s.replace(/v/g,"u");
-  if(!base) return { ok:false };
-  const toneOk = u.t===null || u.t===rd.t || rd.t===0;
-  return { ok:true, typo: (toneOk && u.s===rd.s) ? "" : `${u.disp} → ${rd.py}` };
+  const cands = [w.es].concat(w.alt||[]).map(lexNorm);
+  const v = lexNorm(val);
+  const eq = (a,b)=> a===b || dropArticle(a)===dropArticle(b);
+  if(cands.some(c=>eq(v,c) || eq(sound(v),sound(c)))) return "ok";
+  if(cands.some(c=>eq(stripAccents(v),stripAccents(c)))) return "accent";
+  return "ko";
 }
 function openLexique(setId){
   vocabFilter="lexique"; lexSet=setId; lexCurrent=null;
@@ -1127,7 +1262,7 @@ function renderLexique(){
   const w = lexCurrent;
   const opts = `<option value="all" ${lexSet==="all"?"selected":""}>📚 Tous les thèmes (${LEXIQUE.reduce((n,l)=>n+l.words.length,0)} mots)</option>`
     + LEXIQUE.map(l=>`<option value="${l.id}" ${lexSet===l.id?"selected":""}>${escapeHtml(l.label)} (${l.words.length})</option>`).join("")
-    + `<option value="num" ${lexSet==="num"?"selected":""}>🔢 Nombres (en chinois)</option>`;
+    + `<option value="num" ${lexSet==="num"?"selected":""}>🔢 Nombres (écris-les en lettres)</option>`;
   const total = lexSet==="num" ? 0 : lexWords().length;
   el.innerHTML = `
     ${vocabSegHTML()}
@@ -1138,11 +1273,11 @@ function renderLexique(){
     <div class="card">
       <div class="ex-count">
         <span>${lexSet==="num" ? "Nombres aléatoires" : `${lexMastered()}/${total} mots acquis`}</span>
-        <span class="chip blue">${lexSet==="num"?"🔢 chiffres → chinois":"FR → 中文"}</span>
+        <span class="chip blue">${lexSet==="num"?"🔢 chiffres → lettres":"FR → ES"}</span>
       </div>
-      <div class="prompt-label">${lexSet==="num"?"Écris ce nombre en chinois":"Comment dit-on en chinois ?"}</div>
+      <div class="prompt-label">${lexSet==="num"?"Écris ce nombre en anglais":"Comment dit-on en anglais ?"}</div>
       <div class="prompt">${escapeHtml(w.fr)}</div>
-      <textarea class="answer" id="lexAnswer" rows="1" placeholder="${lexSet==="num"?"ex : sanshi'er ou 三十二":"ex : kafei ou 咖啡"}" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="send"></textarea>
+      <textarea class="answer" id="lexAnswer" placeholder="${lexSet==="num"?"ex : thirty-two":"ex : the scarf"}" autocomplete="off" autocapitalize="off" spellcheck="false" rows="1" autocorrect="off" enterkeyhint="send"></textarea>
       <div class="accents" id="lexAccents"></div>
       <div class="btnrow mainrow">
         <button class="btn soft" id="lexSkip" style="flex:.5">Passer</button>
@@ -1150,7 +1285,7 @@ function renderLexique(){
       </div>
       <div class="result hidden" id="lexResult"></div>
     </div>
-    <div class="empty" style="padding-top:22px;font-size:12.5px">Réponds en pinyin (tons facultatifs) ou en caractères. Les mots ratés reviennent plus souvent.</div>`;
+    <div class="empty" style="padding-top:22px;font-size:12.5px">L'article (the, a) et le « to » des verbes sont facultatifs. Les mots ratés reviennent plus souvent.</div>`;
   bindVocabSeg(el);
   buildAccentBar("lexAccents","lexAnswer");
   document.getElementById("lexSel").onchange = e=>{ lexSet=e.target.value; lexCurrent=null; renderLexique(); };
@@ -1168,26 +1303,25 @@ function doLexCheck(){
   const k = w.set==="num" ? "v|num|"+w.fr : lexKey(w);
   if(w.set!=="num"){
     const s = lexStore(); if(!s[k]) s[k]={ok:0,ko:0};
-    if(r.ok) s[k].ok++; else s[k].ko++;
+    if(r==="ok") s[k].ok++; else s[k].ko++;
   }
-  if(r.ok) resolveMistake(k);
-  else logMistake({ type:"v", k, fr:w.fr, es:[w.zh].concat(w.alt||[]), tense: w.set==="num"?"nombre":"lexique" });
+  if(r==="ok") resolveMistake(k);
+  else logMistake({ type:"v", k, fr:w.fr, es:[w.es].concat(w.alt||[]), tense: w.set==="num"?"nombre":"lexique" });
   save();
   const box = document.getElementById("lexResult");
   box.classList.remove("hidden");
-  const answer = `${ZH.ruby(w.zh)} ${speakBtn(w.zh)}`;
-  box.innerHTML = r.ok
-    ? `<div class="verdict"><span class="badge" style="background:var(--green)">✓</span> Correct !</div>
-       ${r.typo?`<div class="hint-msg">✍️ Petite faute (en orange), pas à refaire : <b style="color:#d9730d">${escapeHtml(r.typo)}</b></div>`:""}
-       <div class="reveal show"><div class="es zh">${answer}</div></div>
-       <div class="btnrow"><button class="btn primary" id="lexNext">Mot suivant →</button></div>`
-    : `<div class="verdict"><span class="badge" style="background:var(--amber)">!</span> Pas tout à fait.</div>
-       <div class="yourline">${userLineHTML(r.res)}</div>
-       <div class="reveal show" style="background:var(--amber-soft)"><div class="lbl" style="color:#a37b00">La bonne réponse</div><div class="es zh" style="color:#a37b00">${answer}</div>${(w.alt&&w.alt.length)?`<div class="tip" style="color:#8a6d00">Aussi : ${escapeHtml(w.alt.join("、"))}</div>`:""}</div>
-       <div class="btnrow"><button class="btn primary" id="lexNext">Mot suivant →</button></div>`;
+  const verdict = r==="ok"
+    ? `<div class="verdict"><span class="badge" style="background:var(--green)">✓</span> Correct ! <span style="color:var(--green)">${escapeHtml(w.es)}</span></div>`
+    : r==="accent"
+    ? `<div class="verdict"><span class="badge" style="background:var(--amber)">~</span> Presque ! Juste un accent.</div>`
+    : `<div class="verdict"><span class="badge" style="background:var(--amber)">!</span> Pas tout à fait.</div>`;
+  box.innerHTML = `${verdict}
+    ${r!=="ok" ? `<div class="yourline"><span class="w bad">${escapeHtml(val)}</span></div>
+      <div class="reveal show" style="background:var(--amber-soft)"><div class="lbl" style="color:#a37b00">La bonne réponse</div><div class="es" style="color:#a37b00">${escapeHtml(w.es)}</div>${(w.alt&&w.alt.length)?`<div class="tip" style="color:#8a6d00">Aussi : ${escapeHtml(w.alt.join(", "))}</div>`:""}</div>` : ""}
+    <div class="btnrow"><button class="btn primary" id="lexNext">Mot suivant →</button></div>`;
   document.getElementById("lexNext").onclick = ()=>{ newLexCard(); renderLexique(); };
   mirrorResult(box);
-  if(r.ok) toast("太好了 ! 📚");
+  if(r==="ok") toast("Great! 📚");
 }
 
 /* ============================================================
@@ -1198,7 +1332,7 @@ function offlineCardHTML(){
   const pending = Object.keys(readDirty()).length;
   const supported = "serviceWorker" in navigator;
   const status = !supported ? "Ce navigateur ne gère pas le hors-ligne."
-    : swReady ? "Tout est téléchargé : parcours, grammaire, caractères et lexique marchent sans réseau."
+    : swReady ? "Tout est téléchargé : parcours, verbes et lexique marchent sans réseau."
     : "Téléchargement des exercices en cours…";
   const sync = API===false ? "Progression gardée sur cet appareil."
     : isGuest() ? "Invité : progression locale uniquement."
@@ -1235,197 +1369,197 @@ async function registerSW(){
 }
 
 /* ============================================================
-   ONGLET GRAMMAIRE : fiches + quiz · tons · caractères
+   RENDU — CONJUGAISON
    ============================================================ */
+let conjTense = "all";     // filtre de temps
+let conjVerb = "all";      // "all" = aléatoire, sinon infinitif ciblé
+let conjCurrent = null;    // défi en cours
+let conjLastSeed = 0;
+let verbMode = "train";    // "train" (entraînement) | "table" (tableaux)
+let tableVerbIdx = 0;      // verbe affiché dans les tableaux
+
+function conjKey(c){ return `${c.inf}|${c.tenseKey}|${c.person}`; }
+function conjStore(){ if(!profile().conj) profile().conj={}; return profile().conj; }
+function conjExpected(c){ const f=CONJ.forms(c.inf)[c.tenseKey]; return f ? f[c.person] : ""; }
+// Bonne réponse : forme exacte, variante US/GB ou contractée, pronom en tête toléré (I go)
+function conjOk(val, expected){
+  const clean = t => t.toLowerCase().replace(/[’‘]/g,"'").replace(/\s+/g," ").trim()
+    .replace(/^(i|you|he|she|it|we|they)\b ?/,"").replace(/^'/,"'");
+  const v = clean(val).replace(/^(\w)/,"$1");
+  return CONJ.variants(expected).some(x=>{ const e = x.toLowerCase(); return v===e || v===e.replace(/^'/,"") || ("'"+v)===e; });
+}
+function conjMastered(){
+  const s=conjStore(); let n=0;
+  for(const k in s){ if(s[k].ok>=ACQUIRE_AT && s[k].ok>s[k].ko) n++; }
+  return n;
+}
 function randInt(n){ return Math.floor(Math.random()*n); }
-let gMode = "gram";        // "gram" | "tons" | "hanzi"
-let gQuiz = null;          // { g, i, picked }
-let toneCur = null;        // { w, toks, picks }
-let hzMode = "train";      // "train" | "list"
-let hzCur = null;          // caractère en cours
-function gStore(k){ const p=profile(); if(!p[k]) p[k]={}; return p[k]; }
-function setGMode(m){ gMode=m; gQuiz=null; renderVerbs(false); window.scrollTo({top:0}); }
-function speakBtn(text){
-  if(!ZH.canSpeak()) return "";
-  return `<button class="spk" type="button" data-t="${escapeHtml(text)}" onclick="ZH.speak(this.dataset.t)" aria-label="Écouter">🔊</button>`;
+
+function newConjChallenge(){
+  const pool = conjVerb==="all" ? CONJ.LIST : CONJ.LIST.filter(v=>v.inf===conjVerb);
+  const verb = pool[randInt(pool.length)] || CONJ.LIST[randInt(CONJ.LIST.length)];
+  let tenses = (conjTense==="all" ? CONJ.TENSES : CONJ.TENSES.filter(t=>t.key===conjTense))
+    .filter(t=>CONJ.forms(verb.inf)[t.key]);   // pas de -ing pour les verbes d'état
+  if(!tenses.length){ conjVerb="all"; return newConjChallenge(); }
+  const tense = tenses[randInt(tenses.length)];
+  const person = randInt(CONJ.PRONOUNS.length);
+  const c = { inf:verb.inf, fr:verb.fr, irr:verb.irr, tenseKey:tense.key, tenseLabel:tense.label, person };
+  // évite de retomber pile sur le même défi
+  if(conjCurrent && conjKey(conjCurrent)===conjKey(c) && (conjTense==="all"||CONJ.TENSES.length>1)){ return newConjChallenge(); }
+  conjCurrent = c;
 }
 
-function renderVerbs(){
-  const el = document.getElementById("view-verbs");
-  const seg = `<div class="seg" style="margin-bottom:14px">
-    <button class="${gMode==="gram"?"on":""}" onclick="setGMode('gram')">📖 Grammaire</button>
-    <button class="${gMode==="tons"?"on":""}" onclick="setGMode('tons')">🎵 Tons</button>
-    <button class="${gMode==="hanzi"?"on":""}" onclick="setGMode('hanzi')">字 Caractères</button></div>`;
-  if(gMode==="tons"){ el.innerHTML = seg + tonesHTML(); bindTones(); return; }
-  if(gMode==="hanzi"){ renderHanzi(el, seg); return; }
-  if(gQuiz){ el.innerHTML = seg + quizHTML(); bindQuiz(); return; }
-  const done = gStore("gram");
-  el.innerHTML = seg + `<div class="thint">Touche une fiche pour la lire, puis fais le quiz (3 questions).</div>` +
-    GRAMMAR.map(g=>`
-    <details class="card gfiche">
-      <summary><span>${escapeHtml(g.title)}</span>${done[g.id]!==undefined?`<span class="chip ${done[g.id]===g.quiz.length?"green":"gray"}">${done[g.id]}/${g.quiz.length}</span>`:""}</summary>
-      <p class="grule">${escapeHtml(g.rule)}</p>
-      <div class="gex">${g.examples.map(([zh,fr])=>`<div><div class="zh">${ZH.ruby(zh)} ${speakBtn(zh)}</div><small>${escapeHtml(fr)}</small></div>`).join("")}</div>
-      <div class="btnrow"><button class="btn primary" onclick="startQuiz('${g.id}')">Quiz →</button></div>
-    </details>`).join("");
+function tenseThClass(label){
+  const c=tenseChip(label);
+  return c==="blue"?"t-blue":c==="green"?"t-green":c==="amber"?"t-amber":"t-brand";
 }
-function startQuiz(id){ gQuiz = { g: GRAMMAR.find(x=>x.id===id), i:0, picked:null, score:0 }; renderVerbs(); window.scrollTo({top:0}); }
-function quizHTML(){
-  const { g, i, picked } = gQuiz, q = g.quiz[i];
-  const blank = picked===null ? `<span class="blank">＿</span>` : `<span class="blank ${picked===q.answer?"ok":"ko"}">${escapeHtml(q.answer==="（rien）"?"∅":q.answer)}</span>`;
-  const [a,b] = q.q.split("＿");
-  const full = q.q.replace("＿", q.answer==="（rien）" ? "" : q.answer);
+function verbTableHTML(){
+  const v = CONJ.LIST[tableVerbIdx];
+  const forms = CONJ.forms(v.inf);
+  const fr = CONJ.frForms(v.inf) || {};
+  const cols = CONJ.TENSES.map(t=>{
+    if(!forms[t.key]) return `<div class="tcol"><span class="th ${tenseThClass(t.label)}">${t.label}</span><div class="tex"><div class="tex-fr">Verbe d'état : pas de forme en -ing (on dit « I ${escapeHtml(forms.presente[0])} », pas « I am ${escapeHtml(v.inf)}ing »).</div></div></div>`;
+    const rows = CONJ.PRONOUNS.map((p,i)=>
+      `<tr><td class="pr">${escapeHtml(p)}</td><td class="fm">${escapeHtml(forms[t.key][i])}<span class="frr">${escapeHtml((fr[t.key]||[])[i]||"")}</span></td></tr>`
+    ).join("");
+    const ex = CONJ.example(v.inf, t.key);
+    const exHtml = ex ? `<div class="tex"><div class="tex-es">${escapeHtml(ex.es)}</div>${ex.fr?`<div class="tex-fr">${escapeHtml(ex.fr)}</div>`:""}</div>` : "";
+    return `<div class="tcol"><span class="th ${tenseThClass(t.label)}">${t.label}</span><table>${rows}</table>${exHtml}</div>`;
+  }).join("");
   return `
     <div class="dayhead">
-      <div class="nav"><button class="iconbtn" onclick="gQuiz=null;renderVerbs()">${chev("left")}</button></div>
-      <div class="daytitle"><b>${escapeHtml(g.title)}</b><small>Question ${i+1} / ${g.quiz.length}</small></div>
-      <div class="nav" style="width:38px"></div>
+      <div class="nav"><button class="iconbtn" onclick="verbNav(-1)">${chev("left")}</button></div>
+      <div class="daytitle"><b>${escapeHtml(v.inf)} ${v.irr?"⚠️":""}</b><small>${escapeHtml(v.fr)} · ${tableVerbIdx+1}/${CONJ.LIST.length}</small></div>
+      <div class="nav"><button class="iconbtn" onclick="verbNav(1)">${chev("right")}</button></div>
     </div>
-    <div class="card">
-      <div class="prompt-label">Complète la phrase</div>
-      <div class="prompt zh">${escapeHtml(a)}${blank}${escapeHtml(b)}</div>
-      <div class="hint-msg" style="margin:-8px 0 14px">${escapeHtml(q.fr)}</div>
-      <div class="qopts">${q.options.map(o=>`<button class="qopt ${picked===null?"":o===q.answer?"ok":o===picked?"ko":""}" ${picked===null?"":"disabled"} data-o="${escapeHtml(o)}">${escapeHtml(o)}</button>`).join("")}</div>
-      ${picked===null ? "" : `
-        <div class="result">
-          <div class="verdict"><span class="badge" style="background:${picked===q.answer?"var(--green)":"var(--amber)"}">${picked===q.answer?"✓":"!"}</span> ${picked===q.answer?"Bien joué !":"Pas tout à fait."}</div>
-          <div class="reveal show"><div class="es zh">${ZH.ruby(full)} ${speakBtn(full)}</div><div class="tip">💡 ${escapeHtml(q.why)}</div></div>
-          <div class="btnrow" style="display:flex"><button class="btn primary" id="qNext">${i+1<g.quiz.length?"Question suivante →":"Terminer"}</button></div>
-        </div>`}
-    </div>`;
+    <div class="thint">${v.irr?"⚠️ Verbe irrégulier · ":""}Fais défiler les tableaux horizontalement →</div>
+    <div class="tscroll">${cols}</div>
+    <div class="thint" style="margin-top:6px">Utilise les flèches ◀ ▶ pour changer de verbe.</div>
+  `;
 }
-function bindQuiz(){
-  document.querySelectorAll(".qopt").forEach(b=> b.onclick=()=>{
-    const q = gQuiz.g.quiz[gQuiz.i];
-    gQuiz.picked = b.dataset.o;
-    if(gQuiz.picked===q.answer) gQuiz.score++;
-    renderVerbs();
-  });
-  const n = document.getElementById("qNext");
-  if(n) n.onclick = ()=>{
-    if(gQuiz.i+1 < gQuiz.g.quiz.length){ gQuiz.i++; gQuiz.picked=null; renderVerbs(); return; }
-    const st = gStore("gram"); st[gQuiz.g.id] = Math.max(st[gQuiz.g.id]||0, gQuiz.score); save();
-    toast(`${gQuiz.score}/${gQuiz.g.quiz.length} ${gQuiz.score===gQuiz.g.quiz.length?"🎉":""}`);
-    gQuiz = null; renderVerbs(); window.scrollTo({top:0});
-  };
+function irregularHTML(){
+  const rows = CONJ.LIST.filter(v=>v.irr).map(v=>{
+    const f = CONJ.forms(v.inf);
+    const past = f.preterito[0], pp = f.perfecto[0].replace(/^have /,"");
+    return `<tr><td class="fm">${escapeHtml(v.inf)}</td><td>${escapeHtml(past)}</td><td>${escapeHtml(pp)}</td><td class="frr2">${escapeHtml(v.fr)}</td></tr>`;
+  }).join("");
+  return `<div class="thint">Base · prétérit · participe passé. Touche « Tableaux » pour voir un verbe en entier.</div>
+    <div class="card" style="padding:0;overflow-x:auto"><table class="irrt"><thead><tr><th>Base</th><th>Prétérit</th><th>Participe</th><th>Sens</th></tr></thead><tbody>${rows}</tbody></table></div>`;
 }
+// Fonctions globales appelées par onclick inline (robuste, indépendant de querySelectorAll)
+function setVerbMode(m){ verbMode=m; renderVerbs(m==="train"); window.scrollTo({top:0}); }
+function verbNav(d){ tableVerbIdx=(tableVerbIdx+d+CONJ.LIST.length)%CONJ.LIST.length; renderVerbs(false); window.scrollTo({top:0}); }
 
-/* ---- Tons ---- */
-const TONE_BTNS = [[1,"ā","1"],[2,"á","2"],[3,"ǎ","3"],[4,"à","4"],[0,"a","neutre"]];
-function newToneWord(){
-  const pool = LEXIQUE.flatMap(l=>l.words).filter(w=>!/[一不儿]/.test(w.zh) && w.zh.length<=3);
-  const w = pool[randInt(pool.length)];
-  toneCur = { w, toks: ZH.tokensOf(w.zh), picks: [], checked:false };
-}
-function tonesHTML(){
-  if(!toneCur) newToneWord();
-  const st = gStore("tones");
-  const { w, toks, picks, checked } = toneCur;
-  const cols = toks.map((t,i)=>`
-    <div class="tcolz">
-      <div class="zhbig">${escapeHtml(t.h)}</div>
-      <div class="tpy ${checked ? (picks[i]===t.t?"ok":"ko") : ""}">${checked ? escapeHtml(t.py) : escapeHtml(t.s.replace(/v/g,"ü"))}</div>
-      <div class="tbtns">${TONE_BTNS.map(([n,lbl,sub])=>`<button class="tbtn ${picks[i]===n?"on":""} ${checked&&n===t.t?"right":""}" data-i="${i}" data-n="${n}" ${checked?"disabled":""}><b>${lbl}</b><small>${sub}</small></button>`).join("")}</div>
-    </div>`).join("");
-  const allRight = checked && toks.every((t,i)=>picks[i]===t.t);
-  return `
-    <div class="card">
-      <div class="ex-count"><span>${st.ok||0} juste${(st.ok||0)>1?"s":""} · ${st.ko||0} raté${(st.ko||0)>1?"s":""}</span>${speakBtn(w.zh)}</div>
-      <div class="prompt-label">Choisis le ton de chaque syllabe</div>
-      <div class="hint-msg" style="margin:-2px 0 12px">${escapeHtml(w.fr)}</div>
-      <div class="tgrid">${cols}</div>
-      ${checked ? `<div class="verdict" style="margin-top:14px"><span class="badge" style="background:${allRight?"var(--green)":"var(--amber)"}">${allRight?"✓":"!"}</span> ${allRight?"Tons justes !":"Regarde les tons en vert."}</div>` : ""}
-      <div class="btnrow"><button class="btn primary" id="toneBtn">${checked?"Mot suivant →":"Vérifier"}</button></div>
+function renderVerbs(reroll){
+  const el = document.getElementById("view-verbs");
+  const seg = `<div class="seg" id="verbSeg" style="margin-bottom:14px">
+    <button class="${verbMode==="train"?"on":""}" onclick="setVerbMode('train')">S'entraîner</button>
+    <button class="${verbMode==="table"?"on":""}" onclick="setVerbMode('table')">Tableaux</button>
+    <button class="${verbMode==="irr"?"on":""}" onclick="setVerbMode('irr')">Irréguliers</button></div>`;
+  if(verbMode==="table"){ el.innerHTML = seg + verbTableHTML(); return; }
+  if(verbMode==="irr"){ el.innerHTML = seg + irregularHTML(); return; }
+  if(reroll || !conjCurrent) newConjChallenge();
+  const c = conjCurrent;
+  const chips = [{key:"all",label:"Tous"}].concat(CONJ.TENSES).map(t=>
+    `<button class="chip ${conjTense===t.key?"brand":"gray"}" data-t="${t.key}" style="cursor:pointer;border:none">${t.label}</button>`
+  ).join(" ");
+  const verbOptions = `<option value="all">🎲 Aléatoire — tous les verbes</option>` +
+    CONJ.LIST.map(v=>`<option value="${v.inf}" ${conjVerb===v.inf?"selected":""}>${v.inf} — ${v.fr}${v.irr?" ⚠️":""}</option>`).join("");
+  const pronoun = CONJ.PRONOUNS[c.person];
+  const modeLabel = conjVerb==="all" ? "🎲 Mode aléatoire" : `🎯 ${conjVerb}`;
+
+  el.innerHTML = seg + `
+    <div class="card" style="margin-bottom:14px;display:flex;align-items:center;gap:14px">
+      <div style="font-size:32px">⚡</div>
+      <div><b style="font-size:16px">Conjugaison</b>
+      <div style="color:var(--muted);font-size:13px">${modeLabel} · ${conjMastered()} forme${conjMastered()>1?"s":""} maîtrisée${conjMastered()>1?"s":""}</div></div>
     </div>
-    <div class="empty" style="padding-top:18px;font-size:12.5px">1 = haut et plat · 2 = monte · 3 = descend puis remonte · 4 = descend fort · neutre = léger.</div>`;
-}
-function bindTones(){
-  document.querySelectorAll(".tbtn").forEach(b=> b.onclick=()=>{
-    toneCur.picks[Number(b.dataset.i)] = Number(b.dataset.n);
-    renderVerbs();
-  });
-  document.getElementById("toneBtn").onclick = ()=>{
-    if(toneCur.checked){ newToneWord(); renderVerbs(); return; }
-    if(toneCur.picks.filter(x=>x!==undefined).length < toneCur.toks.length){ toast("Choisis un ton pour chaque syllabe"); return; }
-    toneCur.checked = true;
-    const right = toneCur.toks.every((t,i)=>toneCur.picks[i]===t.t);
-    const st = gStore("tones"); st[right?"ok":"ko"] = (st[right?"ok":"ko"]||0)+1; save();
-    ZH.speak(toneCur.w.zh);
-    renderVerbs();
-  };
-}
 
-/* ---- Caractères ---- */
-function hzStore(){ return gStore("hanzi"); }
-function newHanzi(){
-  const s = hzStore();
-  const score = h=>{ const r=s[h.c]; return r ? r.ok - r.ko*2 + Math.random()*1.5 : -1 + Math.random(); };
-  const sorted = HANZI.filter(h=>!hzCur || h.c!==hzCur.c).sort((a,b)=>score(a)-score(b));
-  hzCur = sorted[randInt(Math.min(8, sorted.length))];
-}
-function renderHanzi(el, seg){
-  const s = hzStore();
-  const known = HANZI.filter(h=>s[h.c] && s[h.c].ok>=ACQUIRE_AT && s[h.c].ok>s[h.c].ko).length;
-  const sub = `<div class="seg" style="margin-bottom:14px">
-    <button class="${hzMode==="train"?"on":""}" onclick="hzMode='train';renderVerbs()">S'entraîner</button>
-    <button class="${hzMode==="list"?"on":""}" onclick="hzMode='list';renderVerbs()">Liste (${HANZI.length})</button></div>`;
-  if(hzMode==="list"){
-    el.innerHTML = seg + sub + `<div class="thint">${known}/${HANZI.length} caractères acquis · touche un caractère pour l'écouter.</div>
-      <div class="hzgrid">${HANZI.map(h=>{ const r=hanziReading(h), st=s[h.c];
-        const cls = st ? (st.ok>=ACQUIRE_AT && st.ok>st.ko ? "ok" : st.ko ? "ko" : "") : "";
-        return `<button class="hz ${cls}" onclick="ZH.speak('${h.c}')"><b>${escapeHtml(h.c)}</b><span>${escapeHtml(r.py)}</span><small>${escapeHtml(h.fr)}</small></button>`; }).join("")}</div>`;
-    return;
-  }
-  if(!hzCur) newHanzi();
-  const h = hzCur;
-  el.innerHTML = seg + sub + `
+    <div style="margin-bottom:12px">
+      <div class="prompt-label" style="margin-bottom:6px">Verbe</div>
+      <select id="conjVerbSel" class="answer" style="padding:12px 40px 12px 14px;font-size:15px;-webkit-appearance:none;appearance:none;background:#fbfcfe url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2214%22 height=%2214%22 fill=%22none%22 stroke=%22%237b8496%22 stroke-width=%222.5%22><path d=%22M3 5l4 4 4-4%22/></svg>') no-repeat right 14px center">${verbOptions}</select>
+    </div>
+
+    <div class="prompt-label" style="margin-bottom:6px">Temps</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px" id="conjFilter">${chips}</div>
+
     <div class="card">
-      <div class="ex-count"><span>${known}/${HANZI.length} caractères acquis</span><span class="chip amber">字 → pinyin</span></div>
-      <div class="prompt-label">Écris le pinyin de ce caractère</div>
-      <div class="prompt zhbig">${escapeHtml(h.c)}</div>
-      <textarea class="answer" id="hzAnswer" rows="1" placeholder="ex : hǎo, hao3 ou hao" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="send"></textarea>
-      <div class="accents" id="hzAccents"></div>
-      <div class="btnrow mainrow">
-        <button class="btn soft" id="hzSkip" style="flex:.5">Passer</button>
-        <button class="btn primary" id="hzCheck">Vérifier</button>
+      <div class="ex-count">
+        <span>${c.irr?"⚠️ Verbe irrégulier":"Verbe régulier"}</span>
+        <span class="chip ${tenseChip(c.tenseLabel)}">${c.tenseLabel}</span>
       </div>
-      <div class="result hidden" id="hzResult"></div>
+      <div class="prompt-label">Conjugue ce verbe</div>
+      <div class="prompt" style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
+        <span>${c.inf}</span>
+        <span style="font-size:14px;font-weight:600;color:var(--muted)">${c.fr}</span>
+      </div>
+      <div style="font-size:17px;margin:-6px 0 16px"><b style="color:var(--brand)">${pronoun}</b> <span style="color:var(--muted)">· ${c.tenseLabel.toLowerCase()}</span></div>
+
+      <textarea class="answer" id="conjAnswer" placeholder="Écris la forme conjuguée…" autocomplete="off" autocapitalize="off" spellcheck="false" rows="1" autocorrect="off" enterkeyhint="send"></textarea>
+      <div class="accents" id="conjAccents"></div>
+
+      <div class="btnrow mainrow">
+        <button class="btn soft" id="conjSkip" style="flex:.5">Passer</button>
+        <button class="btn primary" id="conjCheck">Vérifier</button>
+      </div>
+      <div class="result hidden" id="conjResult"></div>
     </div>
-    <div class="empty" style="padding-top:18px;font-size:12.5px">Tons facultatifs. Les caractères ratés reviennent plus souvent.</div>`;
-  buildAccentBar("hzAccents","hzAnswer");
-  document.getElementById("hzSkip").onclick = ()=>{ newHanzi(); renderVerbs(); };
-  document.getElementById("hzCheck").onclick = doHanziCheck;
-  const inp = document.getElementById("hzAnswer");
+  `;
+  buildAccentBar("conjAccents","conjAnswer");
+  document.getElementById("conjVerbSel").onchange = (e)=>{ conjVerb=e.target.value; renderVerbs(true); };
+  document.getElementById("conjFilter").querySelectorAll("button").forEach(b=>
+    b.onclick=()=>{ conjTense=b.dataset.t; renderVerbs(true); });
+  document.getElementById("conjCheck").onclick = doConjCheck;
+  document.getElementById("conjSkip").onclick = ()=>renderVerbs(true);
+  const inp=document.getElementById("conjAnswer");
   keepFocus(inp);
   inp.addEventListener("keydown", enterMain);
 }
-function doHanziCheck(){
-  const h = hzCur, rd = hanziReading(h);
-  const val = document.getElementById("hzAnswer").value.trim();
-  if(!val){ toast("Écris le pinyin ✍️"); return; }
-  const r = hanziCheck(val, rd);
-  const s = hzStore(); if(!s[h.c]) s[h.c]={ok:0,ko:0};
-  if(r.ok) s[h.c].ok++; else s[h.c].ko++;
-  const k = "h|"+h.c;
-  if(r.ok) resolveMistake(k);
-  else logMistake({ type:"h", k, fr:h.c, es:[rd.py], s:rd.s, t:rd.t });
+
+function doConjCheck(){
+  const c = conjCurrent;
+  const val = document.getElementById("conjAnswer").value.trim();
+  if(!val){ toast("Écris ta réponse d'abord ✍️"); return; }
+  const expected = conjExpected(c);
+  const exact = conjOk(val, expected);
+  const accentOnly = false;
+  const ok = exact; // seul l'exact compte comme acquis
+
+  const s = conjStore(); const k = conjKey(c);
+  if(!s[k]) s[k]={ok:0,ko:0};
+  if(ok) s[k].ok++; else s[k].ko++;
   save();
-  const box = document.getElementById("hzResult");
+
+  // Journal d'erreurs : logue si faux, retire si corrigé
+  const mk = "c|"+c.inf+"|"+c.tenseKey+"|"+c.person;
+  if(exact) resolveMistake(mk);
+  else logMistake({ type:"c", k:mk, inf:c.inf, frVerb:c.fr, tenseKey:c.tenseKey, tenseLabel:c.tenseLabel, person:c.person });
+
+  const box = document.getElementById("conjResult");
   box.classList.remove("hidden");
-  const info = `<div class="es zh">${escapeHtml(h.c)} · ${escapeHtml(rd.py)} ${speakBtn(h.c)}</div>
-    <div class="tip">${escapeHtml(h.fr)}</div>
-    <div class="tip">Ex. : <span class="zh">${ZH.ruby(h.w)}</span> = ${escapeHtml(h.wfr)} ${speakBtn(h.w)}</div>`;
-  box.innerHTML = (r.ok
-    ? `<div class="verdict"><span class="badge" style="background:var(--green)">✓</span> Correct !</div>
-       ${r.typo?`<div class="hint-msg">✍️ Petit écart de ton (en orange), pas à refaire : <b style="color:#d9730d">${escapeHtml(r.typo)}</b></div>`:""}
-       <div class="reveal show">${info}</div>`
-    : `<div class="verdict"><span class="badge" style="background:var(--amber)">!</span> Pas tout à fait.</div>
-       <div class="yourline"><span class="w bad">${escapeHtml(val)}</span></div>
-       <div class="reveal show" style="background:var(--amber-soft)">${info}</div>`)
-    + `<div class="btnrow"><button class="btn primary" id="hzNext">Caractère suivant →</button></div>`;
-  document.getElementById("hzNext").onclick = ()=>{ newHanzi(); renderVerbs(); };
+  let verdict, body="";
+  if(exact){
+    verdict = `<div class="verdict"><span class="badge" style="background:var(--green)">✓</span> Correct ! <span style="color:var(--green)">${escapeHtml(expected)}</span></div>`;
+  } else if(accentOnly){
+    verdict = `<div class="verdict"><span class="badge" style="background:var(--amber)">~</span> Presque ! Juste un accent.</div>`;
+    body = `<div class="reveal show" style="background:var(--amber-soft)"><div class="lbl" style="color:#a37b00">La bonne forme</div><div class="es" style="color:#a37b00">${escapeHtml(expected)}</div><div class="tip" style="color:#8a6d00">Tu as écrit « ${escapeHtml(val)} » — pense à l'accent.</div></div>`;
+  } else {
+    verdict = `<div class="verdict"><span class="badge" style="background:var(--amber)">!</span> Pas tout à fait.</div>`;
+    body = `<div class="reveal" id="conjReveal"><div class="lbl">La bonne forme</div><div class="es">${escapeHtml(expected)}</div><div class="tip">${escapeHtml(c.inf)} · ${escapeHtml(CONJ.PRONOUNS[c.person])} · ${escapeHtml(c.tenseLabel.toLowerCase())}</div></div>`;
+  }
+  box.innerHTML = `
+    ${verdict}
+    ${!exact ? `<div class="yourline"><span class="w bad">${escapeHtml(val)}</span></div>`:""}
+    ${body}
+    <div class="btnrow">
+      ${(!exact && !accentOnly)?`<button class="btn ghost" id="conjRevealBtn">Voir la réponse</button>`:""}
+      <button class="btn primary" id="conjNext">Verbe suivant →</button>
+    </div>`;
+  const rb=document.getElementById("conjRevealBtn");
+  if(rb) rb.onclick=()=>{ document.getElementById("conjReveal").classList.add("show"); rb.remove(); };
+  document.getElementById("conjNext").onclick=()=>{ renderVerbs(true); if(!document.body.classList.contains("typing")) window.scrollTo({top:0,behavior:"smooth"}); };
   mirrorResult(box);
-  if(r.ok) toast("好！");
+  if(exact) toast("Awesome! ⚡");
 }
 
 /* ============================================================
@@ -1454,9 +1588,9 @@ function chev(dir){
 }
 function tenseChip(t){
   t = t || "";
-  if(/passé|expérience|habitude/i.test(t)) return "blue";
-  if(/futur|souhait/i.test(t)) return "green";
-  if(/hypoth|conseil|probab|comparaison/i.test(t)) return "amber";
+  if(/passé|imparf|prétérit|perfect|past|used to/i.test(t)) return "blue";
+  if(/futur/i.test(t)) return "green";
+  if(/condi/i.test(t)) return "amber";
   return "brand";
 }
 function escapeHtml(s){ return s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
@@ -1466,7 +1600,7 @@ function toast(msg){
   clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove("show"),1800);
 }
 function buildAccentBar(barId="accents", inputId="answer"){
-  const chars=["ü","1","2","3","4","，","？","！"];
+  const chars=["'","-","?","!"];
   const bar=document.getElementById(barId);
   bar.innerHTML=chars.map(c=>`<button type="button" data-c="${c}">${c}</button>`).join("");
   bar.querySelectorAll("button").forEach(b=> b.onclick=()=>{

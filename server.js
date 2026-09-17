@@ -42,8 +42,11 @@ const qUpsert = db.prepare(`
   ON CONFLICT(id) DO UPDATE SET state = excluded.state, updated_at = excluded.updated_at
 `);
 
-// Progression par langue : espagnol = id du profil, chinois = "zh:" + id
-function stateKey(req){ return (req.path.startsWith("/api/zh/") ? "zh:" : "") + req.params.profile; }
+// Progression par langue : espagnol = id du profil, chinois = "zh:" + id, anglais = "en:" + id
+function stateKey(req){
+  const m = req.path.match(/^\/api\/(zh|en)\//);
+  return (m ? m[1] + ":" : "") + req.params.profile;
+}
 // Profils autorisés = ceux présents dans profile_meta (côté serveur = source de vérité)
 function isValidProfile(id) { return !!qMetaGet.get(id); }
 function metaToJson(m) {
@@ -131,7 +134,7 @@ app.post("/api/profiles", (req, res) => {
 });
 
 // Lire l'état d'un profil
-app.get(["/api/state/:profile", "/api/zh/state/:profile"], (req, res) => {
+app.get(["/api/state/:profile", "/api/zh/state/:profile", "/api/en/state/:profile"], (req, res) => {
   const p = req.params.profile;
   if (!isValidProfile(p)) return res.status(404).json({ error: "unknown profile" });
   const row = qGet.get(stateKey(req));
@@ -155,8 +158,8 @@ function saveHandler(req, res) {
 }
 app.put("/api/state/:profile", saveHandler);
 app.post("/api/state/:profile", saveHandler);
-app.put("/api/zh/state/:profile", saveHandler);
-app.post("/api/zh/state/:profile", saveHandler);
+app.put(["/api/zh/state/:profile", "/api/en/state/:profile"], saveHandler);
+app.post(["/api/zh/state/:profile", "/api/en/state/:profile"], saveHandler);
 
 // Front statique
 // no-cache : le navigateur revalide à chaque fois (le service worker gère le hors-ligne)

@@ -257,6 +257,7 @@
 <div class="overlay" id="picker">
   <div class="langsw" role="tablist" aria-label="Langue">
     <button class="on" onclick="goLang('es')">🇪🇸 Espagnol</button>
+    <button class="" onclick="goLang('en')">🇬🇧 Anglais</button>
     <button class="" onclick="goLang('zh')">🇨🇳 Chinois</button>
   </div>
   <h1>¡Hola! 👋</h1>
@@ -288,7 +289,7 @@
   <div class="topbar">
     <div class="brand"><span class="dot">e</span> Aprende<span style="color:var(--brand)">Español</span></div>
     <div class="topright">
-    <button class="toplang" onclick="goLang('zh')" title="Passer au chinois">🇨🇳</button>
+    <button class="toplang" onclick="openPicker()" title="Changer de langue">🇪🇸</button>
     <button class="who" id="whoBtn">
       <span class="av" id="whoAv">D</span>
       <small id="whoName">Dylan</small>
@@ -331,25 +332,27 @@
 
 <div class="toast" id="toast"></div>
 
-<script src="verbs.js?v=16"></script>
-<script src="curriculum.js?v=16"></script>
-<script src="cours.js?v=16"></script>
+<script src="verbs.js?v=17"></script>
+<script src="curriculum.js?v=17"></script>
+<script src="cours.js?v=17"></script>
 <script>
 /* ============================================================
-   LANGUE (même app : espagnol à la racine, chinois dans /zh/)
+   LANGUE (même app : espagnol à la racine, chinois dans /zh/, anglais dans /en/)
    ============================================================ */
 const LANG = "es";
 const LANG_KEY = "aprende_lang";
+const LANG_DIR = { es:"", zh:"zh/", en:"en/" };
 (function(){   // dernière langue choisie sur cet appareil
-  try{ if(localStorage.getItem(LANG_KEY)==="zh") location.replace("zh/" + location.search); }catch(e){}
+  try{ const l = localStorage.getItem(LANG_KEY); if(l && l!=="es" && LANG_DIR[l]) location.replace(LANG_DIR[l] + location.search); }catch(e){}
 })();
 function goLang(l){
-  if(l===LANG) return;
+  if(l===LANG || !(l in LANG_DIR)) return;
   try{ localStorage.setItem(LANG_KEY, l); }catch(e){}
   if(typeof current!=="undefined" && current && current!=="guest"){ clearTimeout(saveTimer); pushState(); }
   const q = (typeof current!=="undefined" && current) ? "?p=" + encodeURIComponent(current) : "";
-  location.href = (LANG==="zh" ? "../" : "./") + (l==="zh" ? "zh/" : "") + q;
+  location.href = (LANG==="es" ? "./" : "../") + LANG_DIR[l] + q;
 }
+function openPicker(){ document.getElementById("whoBtn").click(); }
 
 /* ============================================================
    ÉTAT & PROFILS
@@ -602,7 +605,7 @@ function evaluate(userText, accepted0){
     const total = refTok.length;
     const extra = userMark.filter(x=>!x).length;
     const typos = userTypo.filter(x=>x>=0).length;
-    const score = good - extra*0.5 - typos*0.1;
+    const score = good - extra*0.5 - (total-good)*0.25 - typos*0.1;   // à égalité, la variante complète gagne
     if(!best || score>best.score)
       best = { score, userTok, userMark, userTypo, refTok, refMatched, good, total, refIndex: idx<accepted0.length ? idx : 0 };
   });
