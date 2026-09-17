@@ -1,9 +1,9 @@
-/* Aprende Español — service worker (mode avion)
+/* Xué Zhōngwén — service worker (mode avion)
    Toute l'app est mise en cache : elle marche sans réseau.
    /api/* n'est jamais mis en cache (la progression est gérée par l'app). */
-const CACHE = "aprende-v16";
+const CACHE = "xue-v2";
 const ASSETS = [
-  "./", "index.html", "verbs.js?v=16", "curriculum.js?v=16", "cours.js?v=16",
+  "./", "index.html", "pinyin-pro.js?v=1", "zh.js?v=1", "curriculum.js?v=1", "lexique.js?v=1", "grammaire.js?v=1",
   "manifest.webmanifest", "icon.svg", "icon-192.png", "icon-512.png",
 ];
 
@@ -14,7 +14,7 @@ self.addEventListener("install", e => {
 self.addEventListener("activate", e => {
   e.waitUntil(
     caches.keys()
-      .then(keys => Promise.all(keys.filter(k => k !== CACHE && k.startsWith("aprende-")).map(k => caches.delete(k))))   // ne touche pas au cache de l'autre langue
+      .then(keys => Promise.all(keys.filter(k => k !== CACHE && k.startsWith("xue-")).map(k => caches.delete(k))))   // ne touche pas au cache de l'autre langue
       .then(() => self.clients.claim())
   );
 });
@@ -37,6 +37,6 @@ function networkFirst(req) {
 
 self.addEventListener("fetch", e => {
   const url = new URL(e.request.url);
-  if (e.request.method !== "GET" || url.origin !== location.origin || url.pathname.startsWith("/api/") || url.pathname.startsWith("/zh/")) return;   // /zh/ a son propre service worker
+  if (e.request.method !== "GET" || url.origin !== location.origin || url.pathname.startsWith("/api/")) return;
   e.respondWith(networkFirst(e.request));
 });
